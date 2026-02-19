@@ -350,22 +350,28 @@ submitBtn.MouseButton1Click:Connect(function()
     local inputKey = keyInput.Text:lower():gsub("%s+", "")
     
     if inputKey == expectedKey then
+        -- KEY BENAR
         submitBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
-        submitBtn.Text = "✓ BERHASIL"
-        statusLabel.Text = "✅ Key benar! Loading..."
+        submitBtn.Text = "✓ LOADING..."
+        
+        statusLabel.Text = "⏳ Memuat script... 5 detik"
+        statusLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+        
+        -- Hitung mundur 5 detik
+        for i = 5, 1, -1 do
+            statusLabel.Text = "⏳ Memuat script... " .. i .. " detik"
+            task.wait(1)
+        end
+        
+        statusLabel.Text = "✅ Selesai! Masuk ke menu..."
         statusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+        task.wait(0.5)
         
-        task.wait(1)
         keyGui:Destroy()
-        
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "✅ SELAMAT DATANG",
-            Text = "VARSZZHUB V10 ULTIMATE",
-            Duration = 3
-        })
-        
         createMainUI()
+        
     else
+        -- KEY SALAH
         submitBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
         submitBtn.Text = "✗ SALAH"
         statusLabel.Text = "❌ Key salah! Coba lagi"
@@ -374,15 +380,12 @@ submitBtn.MouseButton1Click:Connect(function()
         keyInput.PlaceholderText = "Coba lagi..."
         
         task.wait(1)
-        submitBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-        submitBtn.Text = "MASUK"
+        submitBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Kembali hijau neon
+        submitBtn.Text = "ENTER👨‍💻"
+        statusLabel.Text = "🔐 Masukkan key dengan benar"
+        statusLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
     end
 end)
-
-closeBtn.MouseButton1Click:Connect(function()
-    keyGui:Destroy()
-end)
-
 -- =============================================
 -- FITUR ANTI-DEWA ABSOLUTE
 -- =============================================
