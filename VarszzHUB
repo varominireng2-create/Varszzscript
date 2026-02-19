@@ -1,336 +1,604 @@
 --[[
-    VARSZZHUB V7 - ANDROID EDITION
+    VARSZZHUB V7 - ANDROID PREMIUM EDITION
     by: Alvaro
     Key: varszzscript
-    KHUSUS ANDROID!
+    KHUSUS ANDROID - UI TOUCH FRIENDLY
 ]]
 
--- Load Library KHUSUS ANDROID (pake yang ringan)
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() or loadstring(game:HttpGet("https://pastebin.com/raw/gyjn3WrA"))()
+local player = game:GetService("Players").LocalPlayer
+local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
 
--- Tunggu bentar biar library ke-load
-task.wait(2)
-
--- Variables
-local player = game.Players.LocalPlayer
-local autoFarm = false
-local autoMoney = false
-local teleportToArea = false
-local godMode = false
-local speedBoost = false
-local jumpBoost = false
-local antiTsunami = false
-
-local targetRarities = {
-    Secret = true,
-    Celestial = true,
-    Divine = true
-}
+-- Tunggu PlayerGui
+repeat task.wait() until player:FindFirstChild("PlayerGui")
 
 -- =============================================
--- 🔑 KEY SYSTEM MANUAL (PALING SEDERHANA)
+-- FUNGSI MEMBUAT SHADOW (BIAR KEREN)
 -- =============================================
-local key = "varszzscript"
+local function addShadow(parent, size, transparency)
+    local shadow = Instance.new("ImageLabel")
+    shadow.Size = UDim2.new(1, size, 1, size)
+    shadow.Position = UDim2.new(0, -size/2, 0, -size/2)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://1316045217"
+    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    shadow.ImageTransparency = transparency or 0.7
+    shadow.Parent = parent
+    shadow.ZIndex = -1
+    return shadow
+end
+
+-- =============================================
+-- KEY SYSTEM (BAGUS UNTUK SENTUHAN)
+-- =============================================
 local keyGui = Instance.new("ScreenGui")
-local keyFrame = Instance.new("Frame")
-local keyLabel = Instance.new("TextLabel")
-local keyBox = Instance.new("TextBox")
-local keyButton = Instance.new("TextButton")
+keyGui.Name = "VarszzHubKey"
+keyGui.Parent = player.PlayerGui
+keyGui.ResetOnSpawn = false
+keyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-keyGui.Parent = player:WaitForChild("PlayerGui")
-keyFrame.Size = UDim2.new(0, 300, 0, 200)
-keyFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
-keyFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.15)
-keyFrame.BackgroundTransparency = 0.1
-keyFrame.Active = true
-keyFrame.Draggable = true
-keyFrame.Parent = keyGui
+-- Background blur (biar fokus ke key)
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+bg.BackgroundTransparency = 0.5
+bg.Parent = keyGui
 
--- Biar keren dikit
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 10)
-corner.Parent = keyFrame
+-- Container utama
+local container = Instance.new("Frame")
+container.Size = UDim2.new(0, 340, 0, 400)
+container.Position = UDim2.new(0.5, -170, 0.5, -200)
+container.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+container.BackgroundTransparency = 0.1
+container.Active = true
+container.Draggable = false  -- Di Android gak perlu drag
+container.Parent = keyGui
 
-keyLabel.Size = UDim2.new(1, 0, 0, 40)
-keyLabel.Position = UDim2.new(0, 0, 0, 10)
-keyLabel.Text = "🔐 VARSZZHUB V7"
-keyLabel.TextColor3 = Color3.new(1, 1, 0)
-keyLabel.TextScaled = true
-keyLabel.BackgroundTransparency = 1
-keyLabel.Font = Enum.Font.GothamBold
-keyLabel.Parent = keyFrame
+-- Rounded corners
+local containerCorner = Instance.new("UICorner")
+containerCorner.CornerRadius = UDim.new(0, 24)
+containerCorner.Parent = container
 
-local subLabel = Instance.new("TextLabel")
-subLabel.Size = UDim2.new(1, 0, 0, 30)
-subLabel.Position = UDim2.new(0, 0, 0, 55)
-subLabel.Text = "Masukkan Key"
-subLabel.TextColor3 = Color3.new(1, 1, 1)
-subLabel.TextScaled = true
-subLabel.BackgroundTransparency = 1
-subLabel.Font = Enum.Font.Gotham
-subLabel.Parent = keyFrame
+-- Shadow
+addShadow(container, 40, 0.6)
 
-keyBox.Size = UDim2.new(0.8, 0, 0, 40)
-keyBox.Position = UDim2.new(0.1, 0, 0, 95)
-keyBox.PlaceholderText = "varszzscript"
-keyBox.Text = ""
-keyBox.TextScaled = true
-keyBox.BackgroundColor3 = Color3.new(0.2, 0.2, 0.25)
-keyBox.TextColor3 = Color3.new(1, 1, 1)
-keyBox.Font = Enum.Font.Gotham
-keyBox.ClearTextOnFocus = false
-keyBox.Parent = keyFrame
+-- Gradient background
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 50)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 30))
+})
+gradient.Rotation = 90
+gradient.Parent = container
 
-local boxCorner = Instance.new("UICorner")
-boxCorner.CornerRadius = UDim.new(0, 5)
-boxCorner.Parent = keyBox
+-- Icon/Logo
+local logo = Instance.new("ImageLabel")
+logo.Size = UDim2.new(0, 80, 0, 80)
+logo.Position = UDim2.new(0.5, -40, 0, 20)
+logo.BackgroundTransparency = 1
+logo.Image = "rbxassetid://6031108334" -- Icon star
+logo.ImageColor3 = Color3.fromRGB(255, 215, 0)
+logo.Parent = container
 
-keyButton.Size = UDim2.new(0.5, 0, 0, 40)
-keyButton.Position = UDim2.new(0.25, 0, 0, 145)
-keyButton.Text = "MASUK"
-keyButton.TextScaled = true
-keyButton.BackgroundColor3 = Color3.new(0, 0.5, 1)
-keyButton.TextColor3 = Color3.new(1, 1, 1)
-keyButton.Font = Enum.Font.GothamBold
-keyButton.Parent = keyFrame
+-- Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Position = UDim2.new(0, 0, 0, 100)
+title.BackgroundTransparency = 1
+title.Text = "VARSZZHUB V7"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 28
+title.Font = Enum.Font.GothamBold
+title.Parent = container
+
+-- Subtitle
+local subtitle = Instance.new("TextLabel")
+subtitle.Size = UDim2.new(1, 0, 0, 30)
+subtitle.Position = UDim2.new(0, 0, 0, 140)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "ANDROID PREMIUM"
+subtitle.TextColor3 = Color3.fromRGB(180, 180, 255)
+subtitle.TextSize = 16
+subtitle.Font = Enum.Font.Gotham
+subtitle.Parent = container
+
+-- Key input card
+local keyCard = Instance.new("Frame")
+keyCard.Size = UDim2.new(0.9, 0, 0, 70)
+keyCard.Position = UDim2.new(0.05, 0, 0, 190)
+keyCard.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+keyCard.BackgroundTransparency = 0.2
+keyCard.Parent = container
+
+local cardCorner = Instance.new("UICorner")
+cardCorner.CornerRadius = UDim.new(0, 16)
+cardCorner.Parent = keyCard
+
+-- Icon lock di dalam key card
+local lockIcon = Instance.new("ImageLabel")
+lockIcon.Size = UDim2.new(0, 30, 0, 30)
+lockIcon.Position = UDim2.new(0, 15, 0.5, -15)
+lockIcon.BackgroundTransparency = 1
+lockIcon.Image = "rbxassetid://6031068443" -- Icon lock
+lockIcon.ImageColor3 = Color3.fromRGB(255, 200, 100)
+lockIcon.Parent = keyCard
+
+-- TextBox untuk key
+local keyInput = Instance.new("TextBox")
+keyInput.Size = UDim2.new(1, -60, 1, 0)
+keyInput.Position = UDim2.new(0, 50, 0, 0)
+keyInput.BackgroundTransparency = 1
+keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+keyInput.PlaceholderText = "Masukkan key"
+keyInput.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+keyInput.TextSize = 18
+keyInput.Font = Enum.Font.Gotham
+keyInput.ClearTextOnFocus = false
+keyInput.Parent = keyCard
+
+-- Tombol submit (BESAR biar gampang disentuh)
+local submitBtn = Instance.new("TextButton")
+submitBtn.Size = UDim2.new(0.8, 0, 0, 60)
+submitBtn.Position = UDim2.new(0.1, 0, 0, 280)
+submitBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+submitBtn.Text = "MASUK"
+submitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+submitBtn.TextSize = 22
+submitBtn.Font = Enum.Font.GothamBold
+submitBtn.Parent = container
 
 local btnCorner = Instance.new("UICorner")
-btnCorner.CornerRadius = UDim.new(0, 5)
-btnCorner.Parent = keyButton
+btnCorner.CornerRadius = UDim.new(0, 18)
+btnCorner.Parent = submitBtn
 
--- Fungsi key
-keyButton.MouseButton1Click:Connect(function()
-    if keyBox.Text == key then
+-- Efek glow di tombol
+local btnGlow = Instance.new("ImageLabel")
+btnGlow.Size = UDim2.new(1, 20, 1, 20)
+btnGlow.Position = UDim2.new(0, -10, 0, -10)
+btnGlow.BackgroundTransparency = 1
+btnGlow.Image = "rbxassetid://1316045217"
+btnGlow.ImageColor3 = Color3.fromRGB(0, 150, 255)
+btnGlow.ImageTransparency = 0.8
+btnGlow.Parent = submitBtn
+btnGlow.ZIndex = -1
+
+-- Status label
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, 0, 0, 30)
+statusLabel.Position = UDim2.new(0, 0, 0, 350)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = "Key: varszzscript"
+statusLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+statusLabel.TextSize = 14
+statusLabel.Font = Enum.Font.Gotham
+statusLabel.Parent = container
+
+-- Tombol close (kecil di pojok)
+local closeBtn = Instance.new("ImageButton")
+closeBtn.Size = UDim2.new(0, 40, 0, 40)
+closeBtn.Position = UDim2.new(1, -50, 0, 10)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Image = "rbxassetid://6031090990"
+closeBtn.ImageColor3 = Color3.fromRGB(255, 100, 100)
+closeBtn.Parent = container
+
+-- FUNGSI KEY
+local expectedKey = "varszzscript"
+
+submitBtn.MouseButton1Click:Connect(function()
+    local inputKey = keyInput.Text:lower():gsub("%s+", "")
+    
+    if inputKey == expectedKey then
+        -- Animasi sukses
+        submitBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+        submitBtn.Text = "✓ BERHASIL"
+        statusLabel.Text = "✅ Key benar! Loading..."
+        statusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+        
+        task.wait(1)
         keyGui:Destroy()
-        task.wait(0.5)
-        createMainUI()
-        -- Notifikasi sambutan
+        
+        -- Notifikasi
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "👋 HALLO",
-            Text = "Selamat datang di VARSZZHUB V7 🔥",
+            Title = "✅ SELAMAT DATANG",
+            Text = "VARSZZHUB V7 AKTIF",
             Duration = 3
         })
+        
+        -- Panggil GUI utama
+        createMainUI()
     else
-        keyBox.Text = ""
-        keyBox.PlaceholderText = "❌ SALAH!"
+        -- Animasi gagal
+        submitBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+        submitBtn.Text = "✗ SALAH"
+        statusLabel.Text = "❌ Key salah! Coba lagi"
+        statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+        keyInput.Text = ""
+        keyInput.PlaceholderText = "Coba lagi..."
+        
+        task.wait(1)
+        submitBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+        submitBtn.Text = "MASUK"
     end
 end)
 
+closeBtn.MouseButton1Click:Connect(function()
+    keyGui:Destroy()
+end)
+
 -- =============================================
--- 🎛️ FUNGSI UTAMA
+-- GUI UTAMA (ANDROID TOUCH FRIENDLY)
 -- =============================================
 function createMainUI()
-    -- Pake UI Sederhana tapi Work di Android
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "VarszzHub"
-    screenGui.Parent = player:WaitForChild("PlayerGui")
+    local mainGui = Instance.new("ScreenGui")
+    mainGui.Name = "VarszzHub"
+    mainGui.Parent = player.PlayerGui
+    mainGui.ResetOnSpawn = false
+    mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Size = UDim2.new(0, 350, 0, 450)
-    mainFrame.Position = UDim2.new(0.5, -175, 0.5, -225)
-    mainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.15)
-    mainFrame.Active = true
-    mainFrame.Draggable = true
-    mainFrame.Parent = screenGui
+    -- Variables
+    local autoFarm = false
+    local autoMoney = false
+    local godMode = false
+    local speedBoost = false
+    local jumpBoost = false
+    local antiTsunami = false
+    
+    -- Main container (lebih kecil biar muat di layar HP)
+    local main = Instance.new("Frame")
+    main.Size = UDim2.new(0, 320, 0, 500)
+    main.Position = UDim2.new(0.5, -160, 0.5, -250)
+    main.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+    main.BackgroundTransparency = 0.05
+    main.Active = true
+    main.Draggable = false
+    main.Parent = mainGui
     
     local mainCorner = Instance.new("UICorner")
-    mainCorner.CornerRadius = UDim.new(0, 10)
-    mainCorner.Parent = mainFrame
+    mainCorner.CornerRadius = UDim.new(0, 24)
+    mainCorner.Parent = main
     
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 40)
-    title.Text = "🌟 VARSZZHUB V7 - ANDROID"
-    title.TextColor3 = Color3.new(1, 1, 0)
-    title.TextScaled = true
-    title.BackgroundColor3 = Color3.new(0.2, 0.2, 0.25)
-    title.Font = Enum.Font.GothamBold
-    title.Parent = mainFrame
+    addShadow(main, 30, 0.5)
     
-    local closeBtn = Instance.new("TextButton")
-    closeBtn.Size = UDim2.new(0, 40, 0, 40)
-    closeBtn.Position = UDim2.new(1, -40, 0, 0)
-    closeBtn.Text = "X"
-    closeBtn.TextColor3 = Color3.new(1, 0, 0)
-    closeBtn.BackgroundTransparency = 1
-    closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.Parent = mainFrame
-    closeBtn.MouseButton1Click:Connect(function() screenGui:Destroy() end)
+    -- Header dengan gradient
+    local header = Instance.new("Frame")
+    header.Size = UDim2.new(1, 0, 0, 80)
+    header.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+    header.Parent = main
     
-    local yPos = 50
+    local headerCorner = Instance.new("UICorner")
+    headerCorner.CornerRadius = UDim.new(0, 24)
+    headerCorner.Parent = header
     
-    -- Fungsi bikin toggle sederhana
-    local function createToggle(name, default, callback)
-        local toggleFrame = Instance.new("Frame")
-        toggleFrame.Size = UDim2.new(0.9, 0, 0, 40)
-        toggleFrame.Position = UDim2.new(0.05, 0, 0, yPos)
-        toggleFrame.BackgroundColor3 = Color3.new(0.15, 0.15, 0.2)
-        toggleFrame.Parent = mainFrame
+    local headerGradient = Instance.new("UIGradient")
+    headerGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 50, 80)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 30, 45))
+    })
+    headerGradient.Rotation = 90
+    headerGradient.Parent = header
+    
+    -- Title in header
+    local mainTitle = Instance.new("TextLabel")
+    mainTitle.Size = UDim2.new(1, -50, 1, 0)
+    mainTitle.Position = UDim2.new(0, 20, 0, 0)
+    mainTitle.BackgroundTransparency = 1
+    mainTitle.Text = "VARSZZHUB V7"
+    mainTitle.TextColor3 = Color3.fromRGB(255, 215, 0)
+    mainTitle.TextSize = 24
+    mainTitle.TextXAlignment = Enum.TextXAlignment.Left
+    mainTitle.Font = Enum.Font.GothamBold
+    mainTitle.Parent = header
+    
+    -- Subtitle
+    local mainSub = Instance.new("TextLabel")
+    mainSub.Size = UDim2.new(1, -50, 0, 20)
+    mainSub.Position = UDim2.new(0, 20, 0, 45)
+    mainSub.BackgroundTransparency = 1
+    mainSub.Text = "Android Edition • varszzscript"
+    mainSub.TextColor3 = Color3.fromRGB(150, 150, 200)
+    mainSub.TextSize = 12
+    mainSub.TextXAlignment = Enum.TextXAlignment.Left
+    mainSub.Font = Enum.Font.Gotham
+    mainSub.Parent = header
+    
+    -- Close button di header
+    local headerClose = Instance.new("ImageButton")
+    headerClose.Size = UDim2.new(0, 40, 0, 40)
+    headerClose.Position = UDim2.new(1, -45, 0, 20)
+    headerClose.BackgroundTransparency = 1
+    headerClose.Image = "rbxassetid://6031090990"
+    headerClose.ImageColor3 = Color3.fromRGB(255, 100, 100)
+    headerClose.Parent = header
+    
+    headerClose.MouseButton1Click:Connect(function()
+        mainGui:Destroy()
+    end)
+    
+    -- ScrollFrame (biar fitur banyak bisa discroll)
+    local scroll = Instance.new("ScrollingFrame")
+    scroll.Size = UDim2.new(1, -20, 1, -100)
+    scroll.Position = UDim2.new(0, 10, 0, 90)
+    scroll.BackgroundTransparency = 1
+    scroll.ScrollBarThickness = 4
+    scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255)
+    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scroll.Parent = main
+    
+    local yPos = 0
+    
+    -- FUNGSI MEMBUAT CARD FITUR (BESAR, MUDAH DISENTUH)
+    local function createFeatureCard(icon, title, desc, defaultColor, callback)
+        local card = Instance.new("Frame")
+        card.Size = UDim2.new(1, -10, 0, 80)
+        card.Position = UDim2.new(0, 5, 0, yPos)
+        card.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+        card.BackgroundTransparency = 0.2
+        card.Parent = scroll
         
-        local toggleCorner = Instance.new("UICorner")
-        toggleCorner.CornerRadius = UDim.new(0, 5)
-        toggleCorner.Parent = toggleFrame
+        local cardCorner = Instance.new("UICorner")
+        cardCorner.CornerRadius = UDim.new(0, 16)
+        cardCorner.Parent = card
         
-        local toggleLabel = Instance.new("TextLabel")
-        toggleLabel.Size = UDim2.new(0.7, 0, 1, 0)
-        toggleLabel.Text = name
-        toggleLabel.TextColor3 = Color3.new(1, 1, 1)
-        toggleLabel.TextScaled = true
-        toggleLabel.BackgroundTransparency = 1
-        toggleLabel.Font = Enum.Font.Gotham
-        toggleLabel.Parent = toggleFrame
+        -- Icon
+        local iconImg = Instance.new("ImageLabel")
+        iconImg.Size = UDim2.new(0, 40, 0, 40)
+        iconImg.Position = UDim2.new(0, 15, 0.5, -20)
+        iconImg.BackgroundTransparency = 1
+        iconImg.Image = icon
+        iconImg.ImageColor3 = defaultColor or Color3.fromRGB(255, 255, 255)
+        iconImg.Parent = card
         
+        -- Title
+        local titleLbl = Instance.new("TextLabel")
+        titleLbl.Size = UDim2.new(1, -130, 0, 25)
+        titleLbl.Position = UDim2.new(0, 65, 0, 15)
+        titleLbl.BackgroundTransparency = 1
+        titleLbl.Text = title
+        titleLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+        titleLbl.TextSize = 18
+        titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+        titleLbl.Font = Enum.Font.GothamBold
+        titleLbl.Parent = card
+        
+        -- Description
+        local descLbl = Instance.new("TextLabel")
+        descLbl.Size = UDim2.new(1, -130, 0, 20)
+        descLbl.Position = UDim2.new(0, 65, 0, 40)
+        descLbl.BackgroundTransparency = 1
+        descLbl.Text = desc
+        descLbl.TextColor3 = Color3.fromRGB(150, 150, 150)
+        descLbl.TextSize = 12
+        descLbl.TextXAlignment = Enum.TextXAlignment.Left
+        descLbl.Font = Enum.Font.Gotham
+        descLbl.Parent = card
+        
+        -- Toggle Switch (besar biar gampang disentuh)
         local toggleBtn = Instance.new("TextButton")
-        toggleBtn.Size = UDim2.new(0.2, 0, 0.8, 0)
-        toggleBtn.Position = UDim2.new(0.75, 0, 0.1, 0)
-        toggleBtn.Text = default and "ON" or "OFF"
-        toggleBtn.TextScaled = true
-        toggleBtn.BackgroundColor3 = default and Color3.new(0, 0.8, 0) or Color3.new(0.5, 0, 0)
+        toggleBtn.Size = UDim2.new(0, 60, 0, 40)
+        toggleBtn.Position = UDim2.new(1, -70, 0.5, -20)
+        toggleBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
+        toggleBtn.Text = "OFF"
+        toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleBtn.TextSize = 14
         toggleBtn.Font = Enum.Font.GothamBold
-        toggleBtn.Parent = toggleFrame
+        toggleBtn.Parent = card
         
         local btnCorner = Instance.new("UICorner")
-        btnCorner.CornerRadius = UDim.new(0, 5)
+        btnCorner.CornerRadius = UDim.new(0, 20)
         btnCorner.Parent = toggleBtn
         
-        local state = default
+        local active = false
+        local colorOn = defaultColor or Color3.fromRGB(0, 150, 255)
+        
         toggleBtn.MouseButton1Click:Connect(function()
-            state = not state
-            toggleBtn.Text = state and "ON" or "OFF"
-            toggleBtn.BackgroundColor3 = state and Color3.new(0, 0.8, 0) or Color3.new(0.5, 0, 0)
-            callback(state)
+            active = not active
+            toggleBtn.Text = active and "ON" or "OFF"
+            toggleBtn.BackgroundColor3 = active and colorOn or Color3.fromRGB(80, 80, 100)
+            callback(active)
         end)
         
-        yPos = yPos + 45
-        return toggleFrame
+        yPos = yPos + 85
+        scroll.CanvasSize = UDim2.new(0, 0, 0, yPos + 10)
+        
+        return card
     end
     
-    -- Notifikasi
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "✅ VARSZZHUB V7 SIAP",
-        Text = "Aktifkan fitur di bawah!",
-        Duration = 3
-    })
-    
     -- =============================================
-    -- FITUR-FITUR
+    -- DAFTAR FITUR (PAKE ICON KEREN)
     -- =============================================
     
     -- God Mode
-    createToggle("🛡️ God Mode", false, function(val)
-        godMode = val
-        if val then
-            spawn(function()
-                while godMode do
-                    task.wait(0.1)
-                    pcall(function()
-                        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-                            player.Character.Humanoid.Health = math.huge
-                        end
-                    end)
-                end
-            end)
+    createFeatureCard(
+        "rbxassetid://6031068443",  -- Icon shield/lock
+        "God Mode", 
+        "Health tak terbatas",
+        Color3.fromRGB(255, 100, 100),
+        function(val) godMode = val 
+            if val then
+                spawn(function()
+                    while godMode do
+                        task.wait(0.1)
+                        pcall(function()
+                            if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+                                player.Character.Humanoid.Health = math.huge
+                            end
+                        end)
+                    end
+                end)
+            end
         end
-    end)
+    )
     
     -- Speed Boost
-    createToggle("⚡ Speed Boost", false, function(val)
-        speedBoost = val
-        if val then
-            spawn(function()
-                while speedBoost do
-                    task.wait(0.1)
-                    pcall(function()
-                        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-                            player.Character.Humanoid.WalkSpeed = 250
-                        end
-                    end)
-                end
-            end)
-        else
-            pcall(function()
-                if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-                    player.Character.Humanoid.WalkSpeed = 16
-                end
-            end)
+    createFeatureCard(
+        "rbxassetid://6031090990",  -- Icon speed
+        "Speed Boost", 
+        "Jalan super cepat (250)",
+        Color3.fromRGB(100, 255, 100),
+        function(val) speedBoost = val 
+            if val then
+                spawn(function()
+                    while speedBoost do
+                        task.wait(0.1)
+                        pcall(function()
+                            if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+                                player.Character.Humanoid.WalkSpeed = 250
+                            end
+                        end)
+                    end
+                end)
+            else
+                pcall(function()
+                    if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+                        player.Character.Humanoid.WalkSpeed = 16
+                    end
+                end)
+            end
         end
-    end)
+    )
+    
+    -- Jump Boost
+    createFeatureCard(
+        "rbxassetid://6031071084",  -- Icon jump
+        "Jump Boost", 
+        "Loncat lebih tinggi",
+        Color3.fromRGB(100, 255, 255),
+        function(val) jumpBoost = val 
+            if val then
+                spawn(function()
+                    while jumpBoost do
+                        task.wait(0.1)
+                        pcall(function()
+                            if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+                                player.Character.Humanoid.JumpPower = 100
+                            end
+                        end)
+                    end
+                end)
+            else
+                pcall(function()
+                    if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+                        player.Character.Humanoid.JumpPower = 50
+                    end
+                end)
+            end
+        end
+    )
     
     -- Auto Farm
-    createToggle("🌾 Auto Farm", false, function(val)
-        autoFarm = val
-        if val then
-            spawn(function()
-                while autoFarm do
-                    task.wait(0.3)
-                    pcall(function()
-                        for _, obj in pairs(workspace:GetDescendants()) do
-                            if obj:IsA("Part") and obj.Name:lower():find("brainrot") and player.Character then
-                                local root = player.Character:FindFirstChild("HumanoidRootPart")
-                                if root then
-                                    root.CFrame = CFrame.new(obj.Position + Vector3.new(0, 2, 0))
-                                    task.wait(0.1)
-                                    firetouchinterest(root, obj, 0)
-                                    task.wait(0.05)
-                                    firetouchinterest(root, obj, 1)
+    createFeatureCard(
+        "rbxassetid://6031088344",  -- Icon farm
+        "Auto Farm", 
+        "Farming brainrot otomatis",
+        Color3.fromRGB(255, 200, 100),
+        function(val) autoFarm = val 
+            if val then
+                spawn(function()
+                    while autoFarm do
+                        task.wait(0.3)
+                        pcall(function()
+                            for _, obj in pairs(workspace:GetDescendants()) do
+                                if obj:IsA("Part") and obj.Name:lower():find("brainrot") and player.Character then
+                                    local root = player.Character:FindFirstChild("HumanoidRootPart")
+                                    if root then
+                                        root.CFrame = CFrame.new(obj.Position + Vector3.new(0, 2, 0))
+                                        task.wait(0.1)
+                                        firetouchinterest(root, obj, 0)
+                                        task.wait(0.05)
+                                        firetouchinterest(root, obj, 1)
+                                    end
                                 end
                             end
-                        end
-                    end)
-                end
-            end)
+                        end)
+                    end
+                end)
+            end
         end
-    end)
+    )
     
     -- Auto Money
-    createToggle("💰 Auto Money", false, function(val)
-        autoMoney = val
-        if val then
-            spawn(function()
-                while autoMoney do
-                    task.wait(2)
-                    pcall(function()
-                        local claim = workspace:FindFirstChild("ClaimMoney") or player.PlayerGui:FindFirstChild("ClaimButton")
-                        if claim and claim:IsA("TextButton") then
-                            claim:Click()
-                        end
-                    end)
-                end
-            end)
+    createFeatureCard(
+        "rbxassetid://6031054644",  -- Icon money
+        "Auto Money", 
+        "Kumpulin duit otomatis",
+        Color3.fromRGB(100, 255, 150),
+        function(val) autoMoney = val 
+            if val then
+                spawn(function()
+                    while autoMoney do
+                        task.wait(2)
+                        pcall(function()
+                            local claim = workspace:FindFirstChild("ClaimMoney") or player.PlayerGui:FindFirstChild("ClaimButton")
+                            if claim and claim:IsA("TextButton") then
+                                claim:Click()
+                            end
+                        end)
+                    end
+                end)
+            end
         end
-    end)
+    )
     
     -- Anti Tsunami
-    createToggle("🌊 Anti Tsunami", false, function(val)
-        antiTsunami = val
-        if val then
-            spawn(function()
-                while antiTsunami do
-                    task.wait(0.5)
-                    pcall(function()
-                        local tsunami = workspace:FindFirstChild("Tsunami")
-                        if tsunami and player.Character then
-                            local dist = (player.Character.HumanoidRootPart.Position - tsunami.Position).Magnitude
-                            if dist < 50 then
-                                local safe = workspace:FindFirstChild("SafeZone") or workspace:FindFirstChild("Spawn")
-                                if safe then
-                                    player.Character.HumanoidRootPart.CFrame = safe.CFrame
+    createFeatureCard(
+        "rbxassetid://6031090990",  -- Icon wave
+        "Anti Tsunami", 
+        "Otomatis hindari tsunami",
+        Color3.fromRGB(100, 150, 255),
+        function(val) antiTsunami = val 
+            if val then
+                spawn(function()
+                    while antiTsunami do
+                        task.wait(0.5)
+                        pcall(function()
+                            local tsunami = workspace:FindFirstChild("Tsunami")
+                            if tsunami and player.Character then
+                                local dist = (player.Character.HumanoidRootPart.Position - tsunami.Position).Magnitude
+                                if dist < 50 then
+                                    local safe = workspace:FindFirstChild("SafeZone") or workspace:FindFirstChild("Spawn")
+                                    if safe then
+                                        player.Character.HumanoidRootPart.CFrame = safe.CFrame
+                                    end
                                 end
                             end
-                        end
-                    end)
-                end
-            end)
+                        end)
+                    end
+                end)
+            end
         end
-    end)
+    )
     
-    -- Credit
-    local credit = Instance.new("TextLabel")
-    credit.Size = UDim2.new(0.9, 0, 0, 30)
-    credit.Position = UDim2.new(0.05, 0, 0, yPos + 10)
-    credit.Text = "by Alvaro | Key: varszzscript"
-    credit.TextColor3 = Color3.new(0.5, 0.5, 0.5)
-    credit.TextScaled = true
-    credit.BackgroundTransparency = 1
-    credit.Font = Enum.Font.Gotham
-    credit.Parent = mainFrame
+    -- Credit di bagian bawah
+    local creditFrame = Instance.new("Frame")
+    creditFrame.Size = UDim2.new(1, -10, 0, 60)
+    creditFrame.Position = UDim2.new(0, 5, 0, yPos)
+    creditFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    creditFrame.BackgroundTransparency = 0.2
+    creditFrame.Parent = scroll
+    
+    local creditCorner = Instance.new("UICorner")
+    creditCorner.CornerRadius = UDim.new(0, 16)
+    creditCorner.Parent = creditFrame
+    
+    local creditText = Instance.new("TextLabel")
+    creditText.Size = UDim2.new(1, -20, 1, 0)
+    creditText.Position = UDim2.new(0, 10, 0, 0)
+    creditText.BackgroundTransparency = 1
+    creditText.Text = "Created by Alvaro • Key: varszzscript"
+    creditText.TextColor3 = Color3.fromRGB(150, 150, 150)
+    creditText.TextSize = 14
+    creditText.Font = Enum.Font.Gotham
+    creditText.TextWrapped = true
+    creditText.Parent = creditFrame
+    
+    yPos = yPos + 70
+    scroll.CanvasSize = UDim2.new(0, 0, 0, yPos)
+    
+    -- Notifikasi siap
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "✅ VARSZZHUB V7 SIAP",
+        Text = "Semua fitur siap digunakan!",
+        Duration = 3
+    })
 end
