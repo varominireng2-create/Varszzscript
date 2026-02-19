@@ -2,22 +2,23 @@
     VARSZZHUB V7 - ESCAPE TSUNAMI FOR BRAINROT
     by: Alvaro
     Key: varszzscript
-    Versi: Dengan Menu (Pasti Muncul)
+    Version: FINAL - ALL FEATURES
 ]]
 
--- Load Library dengan cara berbeda (lebih stabil)
+-- =============================================
+-- LOAD LIBRARY & SERVICES
+-- =============================================
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield', true))()
+local TweenService = game:GetService("TweenService")
+local player = game.Players.LocalPlayer
 
--- Buat Window
+-- =============================================
+-- BUAT WINDOW UTAMA
+-- =============================================
 local Window = Rayfield:CreateWindow({
     Name = "🌟 VARSZZHUB V7",
-    LoadingTitle = "VARSZZHUB V7 Loading...",
+    LoadingTitle = "Loading VARSZZHUB...",
     LoadingSubtitle = "by Alvaro",
-    ConfigurationSaving = {
-        Enabled = true,
-        FolderName = "VarszzHub",
-        FileName = "Settings"
-    },
     KeySystem = true,
     KeySettings = {
         Title = "🔐 KEY SYSTEM",
@@ -29,76 +30,144 @@ local Window = Rayfield:CreateWindow({
     }
 })
 
--- Notifikasi selamat datang
+-- =============================================
+-- 👋 NOTIFIKASI SAMBUTAN (LOADS TRING PERTAMA)
+-- =============================================
 Rayfield:Notify({
-    Title = "✅ VARSZZHUB V7 AKTIF",
-    Content = "Selamat datang, " .. game.Players.LocalPlayer.Name,
+    Title = "👋 HALLO",
+    Content = "Selamat datang di 𝙑𝙖𝙧𝙨𝙯𝙯𝙃𝙐𝘽🔥",
     Duration = 5
 })
 
--- Variables
-local player = game.Players.LocalPlayer
+Rayfield:Notify({
+    Title = "✅ VARSZZHUB V7 AKTIF",
+    Content = "Silakan aktifkan fitur di GUI",
+    Duration = 3
+})
+
+-- =============================================
+-- VARIABLES
+-- =============================================
 local autoFarm = false
 local autoMoney = false
+local teleportToArea = false
+local godMode = false
+local speedBoost = false
+local jumpBoost = false
+local antiTsunami = false
+
 local targetRarities = {
     Secret = true,
     Celestial = true,
     Divine = true
 }
 
--- Fungsi Cek Rarity
-local function checkRarity(itemName)
-    itemName = itemName:lower()
+-- =============================================
+-- 🌍 KOORDINAT AREA RARITY (GANTI SESUAI GAME)
+-- =============================================
+local areaCoordinates = {
+    Secret = CFrame.new(100, 50, 200),      -- GANTI DENGAN KOORDINAT ASLI
+    Celestial = CFrame.new(0, 50, 0),       -- GANTI DENGAN KOORDINAT ASLI
+    Divine = CFrame.new(-150, 50, -100)     -- GANTI DENGAN KOORDINAT ASLI
+}
+
+-- =============================================
+-- 🚀 FUNGSI TELEPORT KE AREA
+-- =============================================
+local function teleportToRarityArea(rarity)
+    if not teleportToArea then return end
+    if not areaCoordinates[rarity] then 
+        Rayfield:Notify({
+            Title = "⚠️ Area tidak ditemukan",
+            Content = "Setting koordinat dulu, bro!",
+            Duration = 3
+        })
+        return
+    end
     
-    if targetRarities.Secret and (
-        itemName:find("secret") or 
-        itemName:find("matteo") or 
-        itemName:find("gattatino")
-    ) then return true end
-    
-    if targetRarities.Celestial and (
-        itemName:find("celestial") or 
-        itemName:find("job job") or 
-        itemName:find("bisonte")
-    ) then return true end
-    
-    if targetRarities.Divine and (
-        itemName:find("divine") or 
-        itemName:find("bulbito") or 
-        itemName:find("burgerini")
-    ) then return true end
-    
-    return false
+    pcall(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local root = player.Character.HumanoidRootPart
+            local tween = TweenService:Create(
+                root,
+                TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {CFrame = areaCoordinates[rarity]}
+            )
+            tween:Play()
+            tween.Completed:Wait()
+            
+            Rayfield:Notify({
+                Title = "🚀 Teleport ke " .. rarity,
+                Content = "Sampai di area!",
+                Duration = 2
+            })
+        end
+    end)
 end
 
--- God Mode Otomatis
-spawn(function()
-    while true do
-        task.wait(0.5)
+-- =============================================
+-- 🔍 FUNGSI CEK RARITY
+-- =============================================
+local function checkRarity(itemName)
+    itemName = itemName:lower()
+    if targetRarities.Secret and (itemName:find("secret") or itemName:find("matteo") or itemName:find("gattatino")) then return "Secret" end
+    if targetRarities.Celestial and (itemName:find("celestial") or itemName:find("job job") or itemName:find("bisonte")) then return "Celestial" end
+    if targetRarities.Divine and (itemName:find("divine") or itemName:find("bulbito") or itemName:find("burgerini")) then return "Divine" end
+    return nil
+end
+
+-- =============================================
+-- 🛡️ FITUR DEWA
+-- =============================================
+local function runGodMode()
+    while godMode do
+        task.wait(0.1)
         pcall(function()
             if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-                local hum = player.Character:FindFirstChildOfClass("Humanoid")
-                hum.Health = hum.MaxHealth
-                hum.WalkSpeed = 200
+                player.Character.Humanoid.Health = math.huge
             end
         end)
     end
-end)
+end
 
--- Auto Farm Function
-local function farmLoop()
-    while autoFarm do
+local function runSpeedBoost()
+    while speedBoost do
         task.wait(0.1)
         pcall(function()
-            for _, obj in pairs(workspace:GetDescendants()) do
-                if (obj:IsA("Part") or obj:IsA("Model")) and checkRarity(obj.Name) and player.Character then
-                    local pos = obj:IsA("Part") and obj.Position or obj:GetPrimaryPartCFrame().Position
-                    player.Character.HumanoidRootPart.CFrame = CFrame.new(pos + Vector3.new(0, 3, 0))
-                    task.wait(0.05)
-                    if obj:IsA("Part") then
-                        obj.CFrame = CFrame.new(9999, 9999, 9999)
-                    else
-                        obj:SetPrimaryPartCFrame(CFrame.new(9999, 9999, 9999))
+            if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+                player.Character.Humanoid.WalkSpeed = 250
+            end
+        end)
+    end
+end
+
+local function runJumpBoost()
+    while jumpBoost do
+        task.wait(0.1)
+        pcall(function()
+            if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+                player.Character.Humanoid.JumpPower = 100
+            end
+        end)
+    end
+end
+
+local function runAntiTsunami()
+    while antiTsunami do
+        task.wait(0.5)
+        pcall(function()
+            local tsunami = workspace:FindFirstChild("Tsunami") or workspace:FindFirstChild("Wave")
+            if tsunami and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (player.Character.HumanoidRootPart.Position - tsunami.Position).Magnitude
+                if distance < 50 then
+                    local safeSpot = workspace:FindFirstChild("SafeZone") or workspace:FindFirstChild("Spawn")
+                    if safeSpot then
+                        player.Character.HumanoidRootPart.CFrame = safeSpot.CFrame
+                        Rayfield:Notify({
+                            Title = "🌊 Tsunami Datang!",
+                            Content = "Langsung dipindah ke tempat aman",
+                            Duration = 1
+                        })
                     end
                 end
             end
@@ -106,13 +175,72 @@ local function farmLoop()
     end
 end
 
--- Auto Money Function
+-- =============================================
+-- 🌾 AUTO FARM SMOOTH + TELEPORT AREA
+-- =============================================
+local function farmLoop()
+    while autoFarm do
+        task.wait(0.3)
+        pcall(function()
+            for _, obj in pairs(workspace:GetDescendants()) do
+                if (obj:IsA("Part") or obj:IsA("Model")) and player.Character then
+                    
+                    local rarity = checkRarity(obj.Name)
+                    if rarity then
+                        -- Teleport ke area rarity (kalo diaktifin)
+                        if teleportToArea then
+                            teleportToRarityArea(rarity)
+                        end
+                        
+                        -- Dapetin posisi target
+                        local targetPos
+                        if obj:IsA("Part") then
+                            targetPos = obj.Position
+                        else
+                            targetPos = obj:GetPrimaryPartCFrame().Position
+                        end
+                        
+                        local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            -- Teleport smooth ke object
+                            local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Linear)
+                            local goal = {CFrame = CFrame.new(targetPos + Vector3.new(0, 2, 0))}
+                            local tween = TweenService:Create(rootPart, tweenInfo, goal)
+                            tween:Play()
+                            tween.Completed:Wait()
+                            
+                            -- Ambil object
+                            if obj:IsA("Part") then
+                                firetouchinterest(rootPart, obj, 0)
+                                task.wait(0.05)
+                                firetouchinterest(rootPart, obj, 1)
+                            elseif obj:IsA("Model") then
+                                for _, part in pairs(obj:GetChildren()) do
+                                    if part:IsA("Part") then
+                                        firetouchinterest(rootPart, part, 0)
+                                        task.wait(0.05)
+                                        firetouchinterest(rootPart, part, 1)
+                                    end
+                                end
+                            end
+                            
+                            task.wait(0.2)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end
+
+-- =============================================
+-- 💰 AUTO COLLECT MONEY
+-- =============================================
 local function moneyLoop()
     while autoMoney do
         task.wait(2)
         pcall(function()
-            local claim = workspace:FindFirstChild("ClaimMoney") or 
-                         player.PlayerGui:FindFirstChild("ClaimButton")
+            local claim = workspace:FindFirstChild("ClaimMoney") or player.PlayerGui:FindFirstChild("ClaimButton")
             if claim then
                 if claim:IsA("TextButton") then
                     claim:Click()
@@ -124,93 +252,107 @@ local function moneyLoop()
     end
 end
 
--- [[ MEMBUAT MENU / TAB ]]
+-- =============================================
+-- 🎛️ MEMBUAT MENU (4 TAB)
+-- =============================================
 
--- Tab MAIN
-local MainTab = Window:CreateTab("MAIN", nil)
-local MainSection = MainTab:CreateSection("🌾 AUTO FARM")
+-- TAB 1: DEWA
+local GodTab = Window:CreateTab("DEWA", nil)
+GodTab:CreateSection("🛡️ FITUR DEWA")
 
--- Toggle Auto Farm
-MainTab:CreateToggle({
-    Name = "Auto Farm Brainrot",
+GodTab:CreateToggle({
+    Name = "🛡️ God Mode",
     CurrentValue = false,
-    Flag = "AutoFarmToggle",
-    Callback = function(value)
-        autoFarm = value
-        if value then
-            spawn(farmLoop)
-            Rayfield:Notify({
-                Title = "Auto Farm Aktif",
-                Content = "Mencari Secret/Celestial/Divine...",
-                Duration = 2
-            })
-        end
-    end
+    Callback = function(v) godMode = v; if v then spawn(runGodMode) end end
 })
 
--- Toggle Auto Money
-MainTab:CreateToggle({
-    Name = "Auto Collect Money",
+GodTab:CreateToggle({
+    Name = "⚡ Speed Boost (250)",
     CurrentValue = false,
-    Flag = "AutoMoneyToggle",
-    Callback = function(value)
-        autoMoney = value
-        if value then
-            spawn(moneyLoop)
-        end
-    end
+    Callback = function(v) speedBoost = v; if v then spawn(runSpeedBoost) end end
 })
 
--- Tab RARITY
+GodTab:CreateToggle({
+    Name = "🦘 Jump Boost",
+    CurrentValue = false,
+    Callback = function(v) jumpBoost = v; if v then spawn(runJumpBoost) end end
+})
+
+GodTab:CreateToggle({
+    Name = "🌊 Anti-Tsunami",
+    CurrentValue = false,
+    Callback = function(v) antiTsunami = v; if v then spawn(runAntiTsunami) end end
+})
+
+-- TAB 2: FARM
+local FarmTab = Window:CreateTab("FARM", nil)
+FarmTab:CreateSection("🌾 AUTO FARM")
+
+FarmTab:CreateToggle({
+    Name = "🌾 Auto Farm Brainrot",
+    CurrentValue = false,
+    Callback = function(v) autoFarm = v; if v then spawn(farmLoop) end end
+})
+
+FarmTab:CreateToggle({
+    Name = "🚀 Teleport ke Area Rarity",
+    CurrentValue = false,
+    Callback = function(v) teleportToArea = v end
+})
+
+FarmTab:CreateToggle({
+    Name = "💰 Auto Collect Money",
+    CurrentValue = false,
+    Callback = function(v) autoMoney = v; if v then spawn(moneyLoop) end end
+})
+
+-- TAB 3: RARITY
 local RarityTab = Window:CreateTab("RARITY", nil)
-local RaritySection = RarityTab:CreateSection("✨ FILTER RARITY")
+RarityTab:CreateSection("✨ FILTER RARITY")
 
--- Toggle untuk masing-masing rarity
 RarityTab:CreateToggle({
-    Name = "Secret Rarity",
+    Name = "🔴 Secret Rarity",
     CurrentValue = true,
-    Flag = "SecretToggle",
-    Callback = function(value)
-        targetRarities.Secret = value
-    end
+    Callback = function(v) targetRarities.Secret = v end
 })
 
 RarityTab:CreateToggle({
-    Name = "Celestial Rarity",
+    Name = "🟢 Celestial Rarity",
     CurrentValue = true,
-    Flag = "CelestialToggle",
-    Callback = function(value)
-        targetRarities.Celestial = value
-    end
+    Callback = function(v) targetRarities.Celestial = v end
 })
 
 RarityTab:CreateToggle({
-    Name = "Divine Rarity",
+    Name = "🔵 Divine Rarity",
     CurrentValue = true,
-    Flag = "DivineToggle",
-    Callback = function(value)
-        targetRarities.Divine = value
-    end
+    Callback = function(v) targetRarities.Divine = v end
 })
 
--- Tab INFO
+-- TAB 4: INFO
 local InfoTab = Window:CreateTab("INFO", nil)
-local InfoSection = InfoTab:CreateSection("📌 SCRIPT INFO")
+InfoTab:CreateSection("📌 INFO SCRIPT")
 
-InfoTab:CreateLabel("🌟 VARSZZHUB V7")
+InfoTab:CreateLabel("🔥 VARSZZHUB V7 - FINAL")
 InfoTab:CreateLabel("by: Alvaro")
-InfoTab:CreateLabel("Game: Escape Tsunami For Brainrot")
 InfoTab:CreateLabel("Key: varszzscript")
 InfoTab:CreateLabel(" ")
-InfoTab:CreateLabel("FITUR:")
-InfoTab:CreateLabel("✅ Auto Farm Brainrot")
-InfoTab:CreateLabel("✅ Filter Secret/Celestial/Divine")
-InfoTab:CreateLabel("✅ Auto Collect Money")
-InfoTab:CreateLabel("✅ God Mode + Speed 200")
+InfoTab:CreateLabel("📋 CARA SETTING AREA:")
+InfoTab:CreateLabel("1. Berdiri di area tujuan")
+InfoTab:CreateLabel("2. Buka console (F9)")
+InfoTab:CreateLabel("3. Ketik: print(player.Character.HumanoidRootPart.Position)")
+InfoTab:CreateLabel("4. Copy hasil, paste di bagian areaCoordinates")
+InfoTab:CreateLabel(" ")
+InfoTab:CreateLabel("✅ FITUR LENGKAP:")
+InfoTab:CreateLabel("- Auto Farm Smooth")
+InfoTab:CreateLabel("- Teleport ke Area")
+InfoTab:CreateLabel("- Filter 3 Rarity")
+InfoTab:CreateLabel("- God Mode Manual")
+InfoTab:CreateLabel("- Anti Tsunami")
+InfoTab:CreateLabel("- Speed + Jump Boost")
 
--- Notifikasi selesai
+-- Notifikasi terakhir
 Rayfield:Notify({
-    Title = "✅ SCRIPT SIAP",
-    Content = "Menu VARSZZHUB V7 sudah muncul!",
+    Title = "🎮 SIAP MAIN",
+    Content = "VARSZZHUB V7 siap digunakan!",
     Duration = 3
 })
