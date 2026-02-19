@@ -1,20 +1,18 @@
 --[[
-    VARSZZHUB V7 - ESCAPE TSUNAMI FOR BRAINROT
+    VARSZZHUB V7 - ANDROID EDITION
     by: Alvaro
     Key: varszzscript
-    Version: FIXED - PASTI WORK
+    KHUSUS ANDROID!
 ]]
 
--- =============================================
--- LOAD LIBRARY FLUXUS (Lebih Stabil)
--- =============================================
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/fluxus%20lib.txt"))()
-local TweenService = game:GetService("TweenService")
-local player = game.Players.LocalPlayer
+-- Load Library KHUSUS ANDROID (pake yang ringan)
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() or loadstring(game:HttpGet("https://pastebin.com/raw/gyjn3WrA"))()
 
--- =============================================
--- VARIABEL GLOBAL
--- =============================================
+-- Tunggu bentar biar library ke-load
+task.wait(2)
+
+-- Variables
+local player = game.Players.LocalPlayer
 local autoFarm = false
 local autoMoney = false
 local teleportToArea = false
@@ -30,50 +28,197 @@ local targetRarities = {
 }
 
 -- =============================================
--- 🌍 KOORDINAT AREA (GANTI NANTI)
+-- 🔑 KEY SYSTEM MANUAL (PALING SEDERHANA)
 -- =============================================
-local areaCoordinates = {
-    Secret = CFrame.new(100, 50, 200),
-    Celestial = CFrame.new(0, 50, 0),
-    Divine = CFrame.new(-150, 50, -100)
-}
+local key = "varszzscript"
+local keyGui = Instance.new("ScreenGui")
+local keyFrame = Instance.new("Frame")
+local keyLabel = Instance.new("TextLabel")
+local keyBox = Instance.new("TextBox")
+local keyButton = Instance.new("TextButton")
 
--- =============================================
--- 🔑 KEY SYSTEM MANUAL (Biar GAGAL PUSING)
--- =============================================
-local keyWindow = Library:Window("🔐 KEY SYSTEM", "Masukkan Key", Color3.fromRGB(30,30,40), Enum.KeyCode.RightShift)
+keyGui.Parent = player:WaitForChild("PlayerGui")
+keyFrame.Size = UDim2.new(0, 300, 0, 200)
+keyFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+keyFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.15)
+keyFrame.BackgroundTransparency = 0.1
+keyFrame.Active = true
+keyFrame.Draggable = true
+keyFrame.Parent = keyGui
 
-keyWindow:Label("Key: varszzscript", Color3.fromRGB(255,255,0))
-local keyInput = keyWindow:TextBox("Key", "Type here...", function() end)
+-- Biar keren dikit
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 10)
+corner.Parent = keyFrame
 
-keyWindow:Button("MASUK", function()
-    if keyInput == "varszzscript" then
-        keyWindow:Destroy()
+keyLabel.Size = UDim2.new(1, 0, 0, 40)
+keyLabel.Position = UDim2.new(0, 0, 0, 10)
+keyLabel.Text = "🔐 VARSZZHUB V7"
+keyLabel.TextColor3 = Color3.new(1, 1, 0)
+keyLabel.TextScaled = true
+keyLabel.BackgroundTransparency = 1
+keyLabel.Font = Enum.Font.GothamBold
+keyLabel.Parent = keyFrame
+
+local subLabel = Instance.new("TextLabel")
+subLabel.Size = UDim2.new(1, 0, 0, 30)
+subLabel.Position = UDim2.new(0, 0, 0, 55)
+subLabel.Text = "Masukkan Key"
+subLabel.TextColor3 = Color3.new(1, 1, 1)
+subLabel.TextScaled = true
+subLabel.BackgroundTransparency = 1
+subLabel.Font = Enum.Font.Gotham
+subLabel.Parent = keyFrame
+
+keyBox.Size = UDim2.new(0.8, 0, 0, 40)
+keyBox.Position = UDim2.new(0.1, 0, 0, 95)
+keyBox.PlaceholderText = "varszzscript"
+keyBox.Text = ""
+keyBox.TextScaled = true
+keyBox.BackgroundColor3 = Color3.new(0.2, 0.2, 0.25)
+keyBox.TextColor3 = Color3.new(1, 1, 1)
+keyBox.Font = Enum.Font.Gotham
+keyBox.ClearTextOnFocus = false
+keyBox.Parent = keyFrame
+
+local boxCorner = Instance.new("UICorner")
+boxCorner.CornerRadius = UDim.new(0, 5)
+boxCorner.Parent = keyBox
+
+keyButton.Size = UDim2.new(0.5, 0, 0, 40)
+keyButton.Position = UDim2.new(0.25, 0, 0, 145)
+keyButton.Text = "MASUK"
+keyButton.TextScaled = true
+keyButton.BackgroundColor3 = Color3.new(0, 0.5, 1)
+keyButton.TextColor3 = Color3.new(1, 1, 1)
+keyButton.Font = Enum.Font.GothamBold
+keyButton.Parent = keyFrame
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 5)
+btnCorner.Parent = keyButton
+
+-- Fungsi key
+keyButton.MouseButton1Click:Connect(function()
+    if keyBox.Text == key then
+        keyGui:Destroy()
         task.wait(0.5)
         createMainUI()
-        
         -- Notifikasi sambutan
-        Library:Notify("👋 Selamat datang di VARSZZHUB V7 🔥", 3)
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "👋 HALLO",
+            Text = "Selamat datang di VARSZZHUB V7 🔥",
+            Duration = 3
+        })
     else
-        Library:Notify("❌ Key SALAH!", 2)
+        keyBox.Text = ""
+        keyBox.PlaceholderText = "❌ SALAH!"
     end
 end)
 
 -- =============================================
--- 🎛️ FUNGSI UTAMA (Dijalankan setelah key bener)
+-- 🎛️ FUNGSI UTAMA
 -- =============================================
 function createMainUI()
-    -- Buat Window Utama
-    local Window = Library:Window("🌟 VARSZZHUB V7", "Escape Tsunami For Brainrot", Color3.fromRGB(35,35,45), Enum.KeyCode.RightShift)
-
-    -- =============================================
-    -- TAB 1: DEWA
-    -- =============================================
-    local DewaTab = Window:Tab("🛡️ DEWA", Color3.fromRGB(255,100,100))
+    -- Pake UI Sederhana tapi Work di Android
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "VarszzHub"
+    screenGui.Parent = player:WaitForChild("PlayerGui")
     
-    DewaTab:Toggle("God Mode (Health Tak Terbatas)", false, function(value)
-        godMode = value
-        if value then
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 350, 0, 450)
+    mainFrame.Position = UDim2.new(0.5, -175, 0.5, -225)
+    mainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.15)
+    mainFrame.Active = true
+    mainFrame.Draggable = true
+    mainFrame.Parent = screenGui
+    
+    local mainCorner = Instance.new("UICorner")
+    mainCorner.CornerRadius = UDim.new(0, 10)
+    mainCorner.Parent = mainFrame
+    
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 40)
+    title.Text = "🌟 VARSZZHUB V7 - ANDROID"
+    title.TextColor3 = Color3.new(1, 1, 0)
+    title.TextScaled = true
+    title.BackgroundColor3 = Color3.new(0.2, 0.2, 0.25)
+    title.Font = Enum.Font.GothamBold
+    title.Parent = mainFrame
+    
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0, 40, 0, 40)
+    closeBtn.Position = UDim2.new(1, -40, 0, 0)
+    closeBtn.Text = "X"
+    closeBtn.TextColor3 = Color3.new(1, 0, 0)
+    closeBtn.BackgroundTransparency = 1
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.Parent = mainFrame
+    closeBtn.MouseButton1Click:Connect(function() screenGui:Destroy() end)
+    
+    local yPos = 50
+    
+    -- Fungsi bikin toggle sederhana
+    local function createToggle(name, default, callback)
+        local toggleFrame = Instance.new("Frame")
+        toggleFrame.Size = UDim2.new(0.9, 0, 0, 40)
+        toggleFrame.Position = UDim2.new(0.05, 0, 0, yPos)
+        toggleFrame.BackgroundColor3 = Color3.new(0.15, 0.15, 0.2)
+        toggleFrame.Parent = mainFrame
+        
+        local toggleCorner = Instance.new("UICorner")
+        toggleCorner.CornerRadius = UDim.new(0, 5)
+        toggleCorner.Parent = toggleFrame
+        
+        local toggleLabel = Instance.new("TextLabel")
+        toggleLabel.Size = UDim2.new(0.7, 0, 1, 0)
+        toggleLabel.Text = name
+        toggleLabel.TextColor3 = Color3.new(1, 1, 1)
+        toggleLabel.TextScaled = true
+        toggleLabel.BackgroundTransparency = 1
+        toggleLabel.Font = Enum.Font.Gotham
+        toggleLabel.Parent = toggleFrame
+        
+        local toggleBtn = Instance.new("TextButton")
+        toggleBtn.Size = UDim2.new(0.2, 0, 0.8, 0)
+        toggleBtn.Position = UDim2.new(0.75, 0, 0.1, 0)
+        toggleBtn.Text = default and "ON" or "OFF"
+        toggleBtn.TextScaled = true
+        toggleBtn.BackgroundColor3 = default and Color3.new(0, 0.8, 0) or Color3.new(0.5, 0, 0)
+        toggleBtn.Font = Enum.Font.GothamBold
+        toggleBtn.Parent = toggleFrame
+        
+        local btnCorner = Instance.new("UICorner")
+        btnCorner.CornerRadius = UDim.new(0, 5)
+        btnCorner.Parent = toggleBtn
+        
+        local state = default
+        toggleBtn.MouseButton1Click:Connect(function()
+            state = not state
+            toggleBtn.Text = state and "ON" or "OFF"
+            toggleBtn.BackgroundColor3 = state and Color3.new(0, 0.8, 0) or Color3.new(0.5, 0, 0)
+            callback(state)
+        end)
+        
+        yPos = yPos + 45
+        return toggleFrame
+    end
+    
+    -- Notifikasi
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "✅ VARSZZHUB V7 SIAP",
+        Text = "Aktifkan fitur di bawah!",
+        Duration = 3
+    })
+    
+    -- =============================================
+    -- FITUR-FITUR
+    -- =============================================
+    
+    -- God Mode
+    createToggle("🛡️ God Mode", false, function(val)
+        godMode = val
+        if val then
             spawn(function()
                 while godMode do
                     task.wait(0.1)
@@ -87,9 +232,10 @@ function createMainUI()
         end
     end)
     
-    DewaTab:Toggle("Speed Boost (250)", false, function(value)
-        speedBoost = value
-        if value then
+    -- Speed Boost
+    createToggle("⚡ Speed Boost", false, function(val)
+        speedBoost = val
+        if val then
             spawn(function()
                 while speedBoost do
                     task.wait(0.1)
@@ -109,43 +255,23 @@ function createMainUI()
         end
     end)
     
-    DewaTab:Toggle("Jump Boost (Tinggi)", false, function(value)
-        jumpBoost = value
-        if value then
+    -- Auto Farm
+    createToggle("🌾 Auto Farm", false, function(val)
+        autoFarm = val
+        if val then
             spawn(function()
-                while jumpBoost do
-                    task.wait(0.1)
+                while autoFarm do
+                    task.wait(0.3)
                     pcall(function()
-                        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-                            player.Character.Humanoid.JumpPower = 100
-                        end
-                    end)
-                end
-            end)
-        else
-            pcall(function()
-                if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-                    player.Character.Humanoid.JumpPower = 50
-                end
-            end)
-        end
-    end)
-    
-    DewaTab:Toggle("Anti-Tsunami (Auto TP)", false, function(value)
-        antiTsunami = value
-        if value then
-            spawn(function()
-                while antiTsunami do
-                    task.wait(0.5)
-                    pcall(function()
-                        local tsunami = workspace:FindFirstChild("Tsunami") or workspace:FindFirstChild("Wave")
-                        if tsunami and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                            local distance = (player.Character.HumanoidRootPart.Position - tsunami.Position).Magnitude
-                            if distance < 50 then
-                                local safeSpot = workspace:FindFirstChild("SafeZone") or workspace:FindFirstChild("Spawn")
-                                if safeSpot then
-                                    player.Character.HumanoidRootPart.CFrame = safeSpot.CFrame
-                                    Library:Notify("🌊 Tsunami! Pindah aman", 2)
+                        for _, obj in pairs(workspace:GetDescendants()) do
+                            if obj:IsA("Part") and obj.Name:lower():find("brainrot") and player.Character then
+                                local root = player.Character:FindFirstChild("HumanoidRootPart")
+                                if root then
+                                    root.CFrame = CFrame.new(obj.Position + Vector3.new(0, 2, 0))
+                                    task.wait(0.1)
+                                    firetouchinterest(root, obj, 0)
+                                    task.wait(0.05)
+                                    firetouchinterest(root, obj, 1)
                                 end
                             end
                         end
@@ -154,158 +280,57 @@ function createMainUI()
             end)
         end
     end)
-
-    -- =============================================
-    -- TAB 2: FARM
-    -- =============================================
-    local FarmTab = Window:Tab("🌾 FARM", Color3.fromRGB(100,255,100))
     
-    FarmTab:Toggle("Auto Farm Brainrot", false, function(value)
-        autoFarm = value
-        if value then
-            spawn(farmLoop)
-        end
-    end)
-    
-    FarmTab:Toggle("Teleport ke Area Rarity", false, function(value)
-        teleportToArea = value
-    end)
-    
-    FarmTab:Toggle("Auto Collect Money", false, function(value)
-        autoMoney = value
-        if value then
-            spawn(moneyLoop)
-        end
-    end)
-
-    -- =============================================
-    -- TAB 3: RARITY
-    -- =============================================
-    local RarityTab = Window:Tab("✨ RARITY", Color3.fromRGB(255,255,100))
-    
-    RarityTab:Toggle("🔴 Secret Rarity", true, function(value)
-        targetRarities.Secret = value
-    end)
-    
-    RarityTab:Toggle("🟢 Celestial Rarity", true, function(value)
-        targetRarities.Celestial = value
-    end)
-    
-    RarityTab:Toggle("🔵 Divine Rarity", true, function(value)
-        targetRarities.Divine = value
-    end)
-
-    -- =============================================
-    -- TAB 4: INFO
-    -- =============================================
-    local InfoTab = Window:Tab("📌 INFO", Color3.fromRGB(100,100,255))
-    
-    InfoTab:Label("🔥 VARSZZHUB V7")
-    InfoTab:Label("by: Alvaro")
-    InfoTab:Label("Key: varszzscript")
-    InfoTab:Label(" ")
-    InfoTab:Label("✅ FITUR:")
-    InfoTab:Label("- God Mode, Speed, Jump")
-    InfoTab:Label("- Anti Tsunami")
-    InfoTab:Label("- Auto Farm Brainrot")
-    InfoTab:Label("- Teleport ke Area")
-    InfoTab:Label("- Auto Collect Money")
-    InfoTab:Label("- Filter Secret/Celestial/Divine")
-    
-    Library:Notify("✅ VARSZZHUB V7 SIAP!", 3)
-end
-
--- =============================================
--- 🔍 FUNGSI CEK RARITY
--- =============================================
-local function checkRarity(itemName)
-    itemName = itemName:lower()
-    if targetRarities.Secret and (itemName:find("secret") or itemName:find("matteo") or itemName:find("gattatino")) then return "Secret" end
-    if targetRarities.Celestial and (itemName:find("celestial") or itemName:find("job job") or itemName:find("bisonte")) then return "Celestial" end
-    if targetRarities.Divine and (itemName:find("divine") or itemName:find("bulbito") or itemName:find("burgerini")) then return "Divine" end
-    return nil
-end
-
--- =============================================
--- 🚀 FUNGSI TELEPORT KE AREA
--- =============================================
-local function teleportToRarityArea(rarity)
-    if not teleportToArea then return end
-    if not areaCoordinates[rarity] then 
-        Library:Notify("⚠️ Area " .. rarity .. " belum disetting", 3)
-        return
-    end
-    
-    pcall(function()
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            player.Character.HumanoidRootPart.CFrame = areaCoordinates[rarity]
-            task.wait(0.5)
-        end
-    end)
-end
-
--- =============================================
--- 🌾 AUTO FARM LOOP
--- =============================================
-function farmLoop()
-    while autoFarm do
-        task.wait(0.3)
-        pcall(function()
-            for _, obj in pairs(workspace:GetDescendants()) do
-                if (obj:IsA("Part") or obj:IsA("Model")) and player.Character then
-                    
-                    local rarity = checkRarity(obj.Name)
-                    if rarity then
-                        -- Teleport ke area (jika diaktifkan)
-                        if teleportToArea then
-                            teleportToRarityArea(rarity)
+    -- Auto Money
+    createToggle("💰 Auto Money", false, function(val)
+        autoMoney = val
+        if val then
+            spawn(function()
+                while autoMoney do
+                    task.wait(2)
+                    pcall(function()
+                        local claim = workspace:FindFirstChild("ClaimMoney") or player.PlayerGui:FindFirstChild("ClaimButton")
+                        if claim and claim:IsA("TextButton") then
+                            claim:Click()
                         end
-                        
-                        -- Dapatkan posisi target
-                        local targetPos
-                        if obj:IsA("Part") then
-                            targetPos = obj.Position
-                        else
-                            targetPos = obj:GetPrimaryPartCFrame().Position
-                        end
-                        
-                        -- Teleport ke object
-                        local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
-                        if rootPart then
-                            rootPart.CFrame = CFrame.new(targetPos + Vector3.new(0, 2, 0))
-                            task.wait(0.1)
-                            
-                            -- Simulasi ambil
-                            if obj:IsA("Part") then
-                                firetouchinterest(rootPart, obj, 0)
-                                task.wait(0.05)
-                                firetouchinterest(rootPart, obj, 1)
+                    end)
+                end
+            end)
+        end
+    end)
+    
+    -- Anti Tsunami
+    createToggle("🌊 Anti Tsunami", false, function(val)
+        antiTsunami = val
+        if val then
+            spawn(function()
+                while antiTsunami do
+                    task.wait(0.5)
+                    pcall(function()
+                        local tsunami = workspace:FindFirstChild("Tsunami")
+                        if tsunami and player.Character then
+                            local dist = (player.Character.HumanoidRootPart.Position - tsunami.Position).Magnitude
+                            if dist < 50 then
+                                local safe = workspace:FindFirstChild("SafeZone") or workspace:FindFirstChild("Spawn")
+                                if safe then
+                                    player.Character.HumanoidRootPart.CFrame = safe.CFrame
+                                end
                             end
-                            
-                            task.wait(0.2)
                         end
-                    end
+                    end)
                 end
-            end
-        end)
-    end
-end
-
--- =============================================
--- 💰 AUTO MONEY LOOP
--- =============================================
-function moneyLoop()
-    while autoMoney do
-        task.wait(2)
-        pcall(function()
-            local claim = workspace:FindFirstChild("ClaimMoney") or player.PlayerGui:FindFirstChild("ClaimButton")
-            if claim then
-                if claim:IsA("TextButton") then
-                    claim:Click()
-                elseif claim:IsA("Part") and claim:FindFirstChildOfClass("ClickDetector") then
-                    fireclickdetector(claim:FindFirstChildOfClass("ClickDetector"))
-                end
-            end
-        end)
-    end
+            end)
+        end
+    end)
+    
+    -- Credit
+    local credit = Instance.new("TextLabel")
+    credit.Size = UDim2.new(0.9, 0, 0, 30)
+    credit.Position = UDim2.new(0.05, 0, 0, yPos + 10)
+    credit.Text = "by Alvaro | Key: varszzscript"
+    credit.TextColor3 = Color3.new(0.5, 0.5, 0.5)
+    credit.TextScaled = true
+    credit.BackgroundTransparency = 1
+    credit.Font = Enum.Font.Gotham
+    credit.Parent = mainFrame
 end
