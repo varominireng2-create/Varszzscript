@@ -312,17 +312,6 @@ local btnCorner = Instance.new("UICorner")
 btnCorner.CornerRadius = UDim.new(0, 18)
 btnCorner.Parent = submitBtn
 
--- Efek glow
-local btnGlow = Instance.new("ImageLabel")
-btnGlow.Size = UDim2.new(1, 20, 1, 20)
-btnGlow.Position = UDim2.new(0, -10, 0, -10)
-btnGlow.BackgroundTransparency = 1
-btnGlow.Image = "rbxassetid://1316045217"
-btnGlow.ImageColor3 = Color3.fromRGB(0, 150, 255)
-btnGlow.ImageTransparency = 0.8
-btnGlow.Parent = submitBtn
-btnGlow.ZIndex = -1
-
 -- STATUS LABEL (HANYA MOTIVASI - TIDAK MENAMPILKAN KEY)
 local statusLabel = Instance.new("TextLabel")
 statusLabel.Size = UDim2.new(1, 0, 0, 30)
