@@ -114,7 +114,7 @@ local function addShadow(parent, size, transparency)
 end
 
 -- =============================================
--- FUNGSI MINIMIZE KE ICON
+-- FUNGSI MINIMIZE KE ICON (POSISI TENGAH KAYAK DELTA)
 -- =============================================
 local function minimizeToIcon()
     if mainGuiRef then
@@ -124,7 +124,10 @@ local function minimizeToIcon()
         if not iconButton then
             iconButton = Instance.new("TextButton")
             iconButton.Size = UDim2.new(0, 70, 0, 70)
-            iconButton.Position = UDim2.new(0, 20, 1, -90)
+            
+            -- ✨ POSISI TENGAH BANGET KAYAK DELTA
+            iconButton.Position = UDim2.new(0.5, -35, 0.5, -35)
+            
             iconButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
             iconButton.Text = "V10"
             iconButton.TextColor3 = Color3.fromRGB(255, 215, 0)
@@ -132,15 +135,18 @@ local function minimizeToIcon()
             iconButton.Font = Enum.Font.GothamBold
             iconButton.Parent = player:WaitForChild("PlayerGui")
             
+            -- Bikin icon bulat
             local iconCorner = Instance.new("UICorner")
             iconCorner.CornerRadius = UDim.new(1, 0)
             iconCorner.Parent = iconButton
             
+            -- Stroke biar keliatan
             local iconStroke = Instance.new("UIStroke")
             iconStroke.Color = Color3.fromRGB(255, 215, 0)
             iconStroke.Thickness = 2
             iconStroke.Parent = iconButton
             
+            -- Shadow
             local iconShadow = Instance.new("ImageLabel")
             iconShadow.Size = UDim2.new(1, 10, 1, 10)
             iconShadow.Position = UDim2.new(0, -5, 0, -5)
@@ -151,6 +157,7 @@ local function minimizeToIcon()
             iconShadow.Parent = iconButton
             iconShadow.ZIndex = -1
             
+            -- Fungsi pas icon diklik
             iconButton.MouseButton1Click:Connect(function()
                 iconButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
                 task.wait(0.1)
@@ -162,13 +169,14 @@ local function minimizeToIcon()
                 iconButton = nil
             end)
             
+            -- Bikin icon bisa di-drag
             makeDraggable(iconButton)
         end
     end
 end
 
 -- =============================================
--- KEY SYSTEM (VERSI RAHASIA - SESUAI PERMINTAAN LO)
+-- KEY SYSTEM (VERSI RAHASIA)
 -- =============================================
 local keyGui = Instance.new("ScreenGui")
 keyGui.Name = "VarszzHubKey"
@@ -275,17 +283,31 @@ keyInput.Font = Enum.Font.Gotham
 keyInput.ClearTextOnFocus = false
 keyInput.Parent = keyCard
 
--- Tombol submit
+-- Tombol submit dengan teks custom "ENTER👨‍💻" warna hijau neon
 local submitBtn = Instance.new("TextButton")
 submitBtn.Size = UDim2.new(0.8, 0, 0, 60)
 submitBtn.Position = UDim2.new(0.1, 0, 0, 300)
-submitBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-submitBtn.Text = "MASUK"
-submitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+submitBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Hijau neon
+submitBtn.Text = "ENTER👨‍💻"
+submitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Teks putih
 submitBtn.TextSize = 24
 submitBtn.Font = Enum.Font.GothamBold
 submitBtn.Parent = container
 
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 18)
+btnCorner.Parent = submitBtn
+
+-- Efek glow hijau (opsional, biar makin mantap)
+local btnGlow = Instance.new("ImageLabel")
+btnGlow.Size = UDim2.new(1, 20, 1, 20)
+btnGlow.Position = UDim2.new(0, -10, 0, -10)
+btnGlow.BackgroundTransparency = 1
+btnGlow.Image = "rbxassetid://1316045217"
+btnGlow.ImageColor3 = Color3.fromRGB(0, 255, 0)  -- Glow hijau
+btnGlow.ImageTransparency = 0.8
+btnGlow.Parent = submitBtn
+btnGlow.ZIndex = -1
 local btnCorner = Instance.new("UICorner")
 btnCorner.CornerRadius = UDim.new(0, 18)
 btnCorner.Parent = submitBtn
@@ -704,24 +726,26 @@ function createMainUI()
     mainSub.Font = Enum.Font.Gotham
     mainSub.Parent = header
     
+    -- TOMBOL MINIMIZE (KUNING)
     local minimizeBtn = Instance.new("ImageButton")
     minimizeBtn.Size = UDim2.new(0, 40, 0, 40)
     minimizeBtn.Position = UDim2.new(1, -90, 0, 20)
     minimizeBtn.BackgroundTransparency = 1
     minimizeBtn.Image = "rbxassetid://6031090990"
-    minimizeBtn.ImageColor3 = Color3.fromRGB(255, 200, 0)
+    minimizeBtn.ImageColor3 = Color3.fromRGB(255, 200, 0)  -- KUNING
     minimizeBtn.Parent = header
     
     minimizeBtn.MouseButton1Click:Connect(function()
         minimizeToIcon()
     end)
     
+    -- TOMBOL CLOSE (MERAH)
     local closeBtn = Instance.new("ImageButton")
     closeBtn.Size = UDim2.new(0, 40, 0, 40)
     closeBtn.Position = UDim2.new(1, -45, 0, 20)
     closeBtn.BackgroundTransparency = 1
     closeBtn.Image = "rbxassetid://6031090990"
-    closeBtn.ImageColor3 = Color3.fromRGB(255, 80, 80)
+    closeBtn.ImageColor3 = Color3.fromRGB(255, 80, 80)  -- MERAH
     closeBtn.Parent = header
     
     closeBtn.MouseButton1Click:Connect(function()
