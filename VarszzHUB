@@ -1,16 +1,111 @@
 --[[
-    VARSZZHUB V7 - ANDROID PREMIUM EDITION
+    VARSZZHUB🔥 V7 - ANDROID PREMIUM EDITION
     by: Alvaro
     Key: varszzscript
-    KHUSUS ANDROID - UI TOUCH FRIENDLY
+    Fitur: Minimize + Drag Icon VH
 ]]
 
 local player = game:GetService("Players").LocalPlayer
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
 
+-- Variabel global untuk minimize
+local mainGuiRef = nil
+local iconButton = nil
+
 -- Tunggu PlayerGui
 repeat task.wait() until player:FindFirstChild("PlayerGui")
+
+-- =============================================
+-- FUNGSI DRAG ICON
+-- =============================================
+local function makeDraggable(icon)
+    local dragging = false
+    local dragStart = nil
+    local iconPos = nil
+    
+    icon.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            iconPos = icon.Position
+        end
+    end)
+    
+    icon.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    game:GetService("UserInputService").InputChanged:Connect(function(input, gameProcessed)
+        if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+            local delta = input.Position - dragStart
+            icon.Position = UDim2.new(
+                iconPos.X.Scale, 
+                iconPos.X.Offset + delta.X,
+                iconPos.Y.Scale, 
+                iconPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
+-- =============================================
+-- FUNGSI MINIMIZE KE ICON (DENGAN DRAG)
+-- =============================================
+local function minimizeToIcon()
+    if mainGuiRef then
+        mainGuiRef.Enabled = false
+        
+        -- Buat icon VH kalo belum ada
+        if not iconButton then
+            iconButton = Instance.new("TextButton")
+            iconButton.Size = UDim2.new(0, 60, 0, 60)
+            iconButton.Position = UDim2.new(0, 20, 1, -80)  -- Posisi awal
+            iconButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+            iconButton.Text = "VH"
+            iconButton.TextColor3 = Color3.fromRGB(255, 215, 0)
+            iconButton.TextSize = 24
+            iconButton.Font = Enum.Font.GothamBold
+            iconButton.Parent = player:WaitForChild("PlayerGui")
+            
+            -- Bikin icon bulat
+            local iconCorner = Instance.new("UICorner")
+            iconCorner.CornerRadius = UDim.new(1, 0)
+            iconCorner.Parent = iconButton
+            
+            -- Shadow icon
+            local iconShadow = Instance.new("ImageLabel")
+            iconShadow.Size = UDim2.new(1, 10, 1, 10)
+            iconShadow.Position = UDim2.new(0, -5, 0, -5)
+            iconShadow.BackgroundTransparency = 1
+            iconShadow.Image = "rbxassetid://1316045217"
+            iconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+            iconShadow.ImageTransparency = 0.5
+            iconShadow.Parent = iconButton
+            iconShadow.ZIndex = -1
+            
+            -- Fungsi pas icon diklik
+            iconButton.MouseButton1Click:Connect(function()
+                -- Animasi kecil pas diklik
+                iconButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+                task.wait(0.1)
+                iconButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+                
+                -- Kembalikan GUI
+                mainGuiRef.Enabled = true
+                
+                -- Hapus icon
+                iconButton:Destroy()
+                iconButton = nil
+            end)
+            
+            -- Bikin icon bisa di-drag
+            makeDraggable(iconButton)
+        end
+    end
+end
 
 -- =============================================
 -- FUNGSI MEMBUAT SHADOW (BIAR KEREN)
@@ -85,7 +180,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 100)
 title.BackgroundTransparency = 1
-title.Text = "VARSZZHUB V7"
+title.Text = "VARSZZHUB🔥 V7"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 28
 title.Font = Enum.Font.GothamBold
@@ -201,7 +296,7 @@ submitBtn.MouseButton1Click:Connect(function()
         -- Notifikasi
         game:GetService("StarterGui"):SetCore("SendNotification", {
             Title = "✅ SELAMAT DATANG",
-            Text = "VARSZZHUB V7 AKTIF",
+            Text = "VARSZZHUB🔥 V7 AKTIF",
             Duration = 3
         })
         
@@ -235,6 +330,9 @@ function createMainUI()
     mainGui.Parent = player.PlayerGui
     mainGui.ResetOnSpawn = false
     mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    -- Simpan referensi global untuk minimize
+    mainGuiRef = mainGui
     
     -- Variables
     local autoFarm = false
@@ -283,7 +381,7 @@ function createMainUI()
     mainTitle.Size = UDim2.new(1, -50, 1, 0)
     mainTitle.Position = UDim2.new(0, 20, 0, 0)
     mainTitle.BackgroundTransparency = 1
-    mainTitle.Text = "VARSZZHUB V7"
+    mainTitle.Text = "VARSZZHUB🔥 V7"
     mainTitle.TextColor3 = Color3.fromRGB(255, 215, 0)
     mainTitle.TextSize = 24
     mainTitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -302,7 +400,7 @@ function createMainUI()
     mainSub.Font = Enum.Font.Gotham
     mainSub.Parent = header
     
-    -- Close button di header
+    -- Close button di header (SEKARANG JADI MINIMIZE)
     local headerClose = Instance.new("ImageButton")
     headerClose.Size = UDim2.new(0, 40, 0, 40)
     headerClose.Position = UDim2.new(1, -45, 0, 20)
@@ -311,8 +409,9 @@ function createMainUI()
     headerClose.ImageColor3 = Color3.fromRGB(255, 100, 100)
     headerClose.Parent = header
     
+    -- MINIMIZE KE ICON (BUKAN DESTROY)
     headerClose.MouseButton1Click:Connect(function()
-        mainGui:Destroy()
+        minimizeToIcon()
     end)
     
     -- ScrollFrame (biar fitur banyak bisa discroll)
@@ -597,7 +696,7 @@ function createMainUI()
     
     -- Notifikasi siap
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "✅ VARSZZHUB V7 SIAP",
+        Title = "✅ VARSZZHUB🔥 SIAP",
         Text = "Semua fitur siap digunakan!",
         Duration = 3
     })
