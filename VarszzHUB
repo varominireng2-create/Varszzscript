@@ -1,7 +1,8 @@
 --[[
-    VARSZZHUB V10 - ULTIMATE EDITION
+    VARSZZHUB V10 - GOLD EDITION
     by: Alvaro
-    Status: DEWA DARI SEGALA DEWA
+    Version: FINAL - NO CUT, NO BUG
+    Status: 🔥 DEWA SEJATI 🔥
 ]]
 
 local player = game:GetService("Players").LocalPlayer
@@ -9,6 +10,7 @@ local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
+local Debris = game:GetService("Debris")
 
 -- =============================================
 -- VARIABEL GLOBAL
@@ -205,8 +207,8 @@ local subtitle = Instance.new("TextLabel")
 subtitle.Size = UDim2.new(1, 0, 0, 30)
 subtitle.Position = UDim2.new(0, 0, 0, 155)
 subtitle.BackgroundTransparency = 1
-subtitle.Text = "ULTIMATE EDITION"
-subtitle.TextColor3 = Color3.fromRGB(180, 180, 255)
+subtitle.Text = "GOLD EDITION"
+subtitle.TextColor3 = Color3.fromRGB(255, 215, 0)
 subtitle.TextSize = 16
 subtitle.Font = Enum.Font.Gotham
 subtitle.Parent = container
@@ -242,7 +244,7 @@ keyInput.Font = Enum.Font.Gotham
 keyInput.ClearTextOnFocus = false
 keyInput.Parent = keyCard
 
--- TOMBOL SUBMIT (HANYA SATU, TIDAK DOBEL)
+-- TOMBOL SUBMIT
 local submitBtn = Instance.new("TextButton")
 submitBtn.Size = UDim2.new(0.8, 0, 0, 60)
 submitBtn.Position = UDim2.new(0.1, 0, 0, 300)
@@ -327,7 +329,7 @@ closeBtn.MouseButton1Click:Connect(function()
     keyGui:Destroy()
 end)
 
---  =============================================
+-- =============================================
 -- ABSOLUTE GOD MODE (KEBAL TSUNAMI)
 -- =============================================
 local function antiDewaLoop()
@@ -338,41 +340,49 @@ local function antiDewaLoop()
                 local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
                 local root = player.Character:FindFirstChild("HumanoidRootPart")
                 
-                -- 1. HEALTH NORMAL (tetap dijaga)
+                -- 1. HEALTH TAK TERBATAS
                 if humanoid then
                     humanoid.Health = math.huge
                 end
                 
-                -- 2. DETEKSI TSUNAMI (Cegah insta-kill)
-                                local tsunami = Workspace:FindFirstChild("Tsunami") or Workspace:FindFirstChild("Wave")
+                -- 2. DETEKSI TSUNAMI (CEGAH INSTA-KILL)
+                local tsunami = Workspace:FindFirstChild("Tsunami") or Workspace:FindFirstChild("Wave") or Workspace:FindFirstChild("KillerWave")
                 if tsunami and root then
                     local distance = (root.Position - tsunami.Position).Magnitude
                     
-                    -- Kalo tsunami terlalu dekat (ancamannya)
-                    if distance < 50 then
-                        -- Metode 1: Teleport ke safe zone
+                    -- JIKA TSUNAMI TERLALU DEKAT
+                    if distance < 70 then
+                        -- CARI TEMPAT AMAN
                         local safeZone = Workspace:FindFirstChild("SafeZone") or Workspace:FindFirstChild("Spawn")
                         if safeZone then
+                            -- TELEPORT KE TEMPAT AMAN
                             root.CFrame = safeZone.CFrame
                         else
-                            -- Metode 2: Loncat tinggi (kalo gak ada safe zone)
+                            -- LONCAT TINGGI JIKA TIDAK ADA TEMPAT AMAN
                             root.Velocity = Vector3.new(0, 200, 0)
                         end
                         
-                        -- Metode 3: Forcefield sementara (anti OHK)
+                        -- FORCEFIELD SEMENTARA (ANTI OHK)
                         local forceField = Instance.new("ForceField")
                         forceField.Visible = false
                         forceField.Parent = player.Character
-                        game:GetService("Debris"):AddItem(forceField, 2)
+                        Debris:AddItem(forceField, 3)
                     end
                 end
                 
-                -- 3. ANTI KNOCKBACK & DROWN (tetap sama)
+                -- 3. ANTI KNOCKBACK
                 if root then
                     root.Velocity = root.Velocity * 0.1
-                    if root.Position.Y < -5 then
-                        root.Velocity = Vector3.new(0, 50, 0)
-                    end
+                end
+                
+                -- 4. ANTI TENGGELAM
+                if root and root.Position.Y < -5 then
+                    root.Velocity = Vector3.new(0, 50, 0)
+                end
+                
+                -- 5. ANTI FALL DAMAGE
+                if humanoid and humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+                    humanoid.Health = humanoid.MaxHealth
                 end
             end
         end)
@@ -504,7 +514,7 @@ local function infJumpLoop()
 end
 
 -- =============================================
--- FITUR ANTI TSUNAMI
+-- FITUR ANTI TSUNAMI (MANUAL)
 -- =============================================
 local function antiTsunamiLoop()
     while settings.antiTsunami do
@@ -954,16 +964,16 @@ function createMainUI()
         contentY = 5
         
         if tabName == "DEWA" then
-            createContentToggle("🛡️ God Mode", "Health tak terbatas + Anti Tsunami", settings.godMode, Color3.fromRGB(255, 100, 100), function(val)
+            createContentToggle("🛡️ GOD MODE ABSOLUTE", "Kebal tsunami + anti tenggelam", settings.godMode, Color3.fromRGB(255, 100, 100), function(val)
                 settings.godMode = val
             end)
-            createContentToggle("🌊 Anti Tsunami (Manual)", "Otomatis hindari ombak", settings.antiTsunami, Color3.fromRGB(100, 150, 255), function(val)
+            createContentToggle("🌊 Anti Tsunami (Manual)", "Hindari ombak manual", settings.antiTsunami, Color3.fromRGB(100, 150, 255), function(val)
                 settings.antiTsunami = val
                 if val then spawn(antiTsunamiLoop) end
             end)
             
         elseif tabName == "MOVEMENT" then
-            createContentToggle("✈️ Fly Mode", "Terbang bebas", settings.flyMode, Color3.fromRGB(200, 100, 255), function(val)
+            createContentToggle("✈️ Fly Mode", "Terbang bebas (WASD + Spasi)", settings.flyMode, Color3.fromRGB(200, 100, 255), function(val)
                 settings.flyMode = val
                 toggleFly()
             end)
@@ -1001,7 +1011,7 @@ function createMainUI()
             end)
             
         elseif tabName == "SMART" then
-            createContentToggle("🌊 Wave Prediction", "Prediksi tsunami", settings.wavePredict, Color3.fromRGB(100, 200, 255), function(val)
+            createContentToggle("🌊 Wave Prediction", "Prediksi tsunami (notifikasi)", settings.wavePredict, Color3.fromRGB(100, 200, 255), function(val)
                 settings.wavePredict = val
                 if val then spawn(wavePredictionLoop) end
             end)
@@ -1020,7 +1030,7 @@ function createMainUI()
     showTab("DEWA")
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "✅ VARSZZHUB V10 SIAP",
+        Title = "✅ VARSZZHUB V10 GOLD",
         Text = "Ultimate Edition Aktif!",
         Duration = 3
     })
