@@ -344,7 +344,7 @@ local function antiDewaLoop()
                 end
                 
                 -- 2. DETEKSI TSUNAMI (Cegah insta-kill)
-                local tsunami = Workspace:FindFirstChild("Tsunami") or Workspace:FindFirstChild("Wave")
+                                local tsunami = Workspace:FindFirstChild("Tsunami") or Workspace:FindFirstChild("Wave")
                 if tsunami and root then
                     local distance = (root.Position - tsunami.Position).Magnitude
                     
@@ -377,7 +377,9 @@ local function antiDewaLoop()
             end
         end)
     end
-end =============================================
+end
+
+-- =============================================
 -- FITUR MOVEMENT
 -- =============================================
 local function movementLoop()
@@ -952,10 +954,10 @@ function createMainUI()
         contentY = 5
         
         if tabName == "DEWA" then
-            createContentToggle("🛡️ God Mode", "Health tak terbatas", settings.godMode, Color3.fromRGB(255, 100, 100), function(val)
+            createContentToggle("🛡️ God Mode", "Health tak terbatas + Anti Tsunami", settings.godMode, Color3.fromRGB(255, 100, 100), function(val)
                 settings.godMode = val
             end)
-            createContentToggle("🌊 Anti Tsunami", "Otomatis hindari ombak", settings.antiTsunami, Color3.fromRGB(100, 150, 255), function(val)
+            createContentToggle("🌊 Anti Tsunami (Manual)", "Otomatis hindari ombak", settings.antiTsunami, Color3.fromRGB(100, 150, 255), function(val)
                 settings.antiTsunami = val
                 if val then spawn(antiTsunamiLoop) end
             end)
