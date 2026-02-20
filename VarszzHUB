@@ -16,8 +16,6 @@ local Workspace = game:GetService("Workspace")
 local mainGuiRef = nil
 local iconButton = nil
 local isMinimized = false
-local currentTheme = "DARK"
-local currentLang = "ID"
 
 -- Settings yang bisa disimpan
 local settings = {
@@ -29,37 +27,18 @@ local settings = {
     flyMode = false,
     noclip = false,
     infJump = false,
-    espEnabled = false,
     autoFarm = false,
     autoMoney = false,
-    autoUpgrade = false,
-    autoBuySpeed = false,
-    autoBuyCarry = false,
-    autoSell = false,
-    wavePredict = false,
-    theme = "DARK",
-    language = "ID"
+    wavePredict = false
 }
 
--- Rarity filter
-local targetRarities = {
-    Secret = true,
-    Celestial = true,
-    Divine = true,
-    LuckyBlock = false,
-    Event = false
-}
-
--- Area coordinates (default, nanti bisa disave)
+-- Area coordinates
 local areaCoordinates = {
     Spawn = CFrame.new(0, 50, 0),
     Secret = CFrame.new(100, 50, 200),
     Celestial = CFrame.new(0, 50, 0),
     Divine = CFrame.new(-150, 50, -100),
-    SafeZone = CFrame.new(50, 50, 50),
-    Custom1 = CFrame.new(0, 0, 0),
-    Custom2 = CFrame.new(0, 0, 0),
-    Custom3 = CFrame.new(0, 0, 0)
+    SafeZone = CFrame.new(50, 50, 50)
 }
 
 -- =============================================
@@ -114,7 +93,7 @@ local function addShadow(parent, size, transparency)
 end
 
 -- =============================================
--- FUNGSI MINIMIZE KE ICON (POSISI TENGAH KAYAK DELTA)
+-- FUNGSI MINIMIZE KE ICON (TENGAH LAYAR)
 -- =============================================
 local function minimizeToIcon()
     if mainGuiRef then
@@ -124,10 +103,7 @@ local function minimizeToIcon()
         if not iconButton then
             iconButton = Instance.new("TextButton")
             iconButton.Size = UDim2.new(0, 70, 0, 70)
-            
-            -- ✨ POSISI TENGAH BANGET KAYAK DELTA
             iconButton.Position = UDim2.new(0.5, -35, 0.5, -35)
-            
             iconButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
             iconButton.Text = "V10"
             iconButton.TextColor3 = Color3.fromRGB(255, 215, 0)
@@ -135,18 +111,15 @@ local function minimizeToIcon()
             iconButton.Font = Enum.Font.GothamBold
             iconButton.Parent = player:WaitForChild("PlayerGui")
             
-            -- Bikin icon bulat
             local iconCorner = Instance.new("UICorner")
             iconCorner.CornerRadius = UDim.new(1, 0)
             iconCorner.Parent = iconButton
             
-            -- Stroke biar keliatan
             local iconStroke = Instance.new("UIStroke")
             iconStroke.Color = Color3.fromRGB(255, 215, 0)
             iconStroke.Thickness = 2
             iconStroke.Parent = iconButton
             
-            -- Shadow
             local iconShadow = Instance.new("ImageLabel")
             iconShadow.Size = UDim2.new(1, 10, 1, 10)
             iconShadow.Position = UDim2.new(0, -5, 0, -5)
@@ -157,26 +130,23 @@ local function minimizeToIcon()
             iconShadow.Parent = iconButton
             iconShadow.ZIndex = -1
             
-            -- Fungsi pas icon diklik
             iconButton.MouseButton1Click:Connect(function()
                 iconButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
                 task.wait(0.1)
                 iconButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-                
                 mainGuiRef.Enabled = true
                 isMinimized = false
                 iconButton:Destroy()
                 iconButton = nil
             end)
             
-            -- Bikin icon bisa di-drag
             makeDraggable(iconButton)
         end
     end
 end
 
 -- =============================================
--- KEY SYSTEM (VERSI RAHASIA)
+-- KEY SYSTEM
 -- =============================================
 local keyGui = Instance.new("ScreenGui")
 keyGui.Name = "VarszzHubKey"
@@ -184,14 +154,12 @@ keyGui.Parent = player:WaitForChild("PlayerGui")
 keyGui.ResetOnSpawn = false
 keyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Background blur
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
 bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 bg.BackgroundTransparency = 0.5
 bg.Parent = keyGui
 
--- Container utama
 local container = Instance.new("Frame")
 container.Size = UDim2.new(0, 360, 0, 440)
 container.Position = UDim2.new(0.5, -180, 0.5, -220)
@@ -201,15 +169,12 @@ container.Active = true
 container.Draggable = false
 container.Parent = keyGui
 
--- Rounded corners
 local containerCorner = Instance.new("UICorner")
 containerCorner.CornerRadius = UDim.new(0, 24)
 containerCorner.Parent = container
 
--- Shadow
 addShadow(container, 40, 0.6)
 
--- Gradient background
 local gradient = Instance.new("UIGradient")
 gradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 60)),
@@ -218,7 +183,6 @@ gradient.Color = ColorSequence.new({
 gradient.Rotation = 90
 gradient.Parent = container
 
--- Logo
 local logo = Instance.new("ImageLabel")
 logo.Size = UDim2.new(0, 90, 0, 90)
 logo.Position = UDim2.new(0.5, -45, 0, 20)
@@ -227,7 +191,6 @@ logo.Image = "rbxassetid://6031108334"
 logo.ImageColor3 = Color3.fromRGB(255, 215, 0)
 logo.Parent = container
 
--- Title
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 50)
 title.Position = UDim2.new(0, 0, 0, 110)
@@ -238,7 +201,6 @@ title.TextSize = 32
 title.Font = Enum.Font.GothamBold
 title.Parent = container
 
--- Subtitle
 local subtitle = Instance.new("TextLabel")
 subtitle.Size = UDim2.new(1, 0, 0, 30)
 subtitle.Position = UDim2.new(0, 0, 0, 155)
@@ -249,7 +211,6 @@ subtitle.TextSize = 16
 subtitle.Font = Enum.Font.Gotham
 subtitle.Parent = container
 
--- Key input card
 local keyCard = Instance.new("Frame")
 keyCard.Size = UDim2.new(0.9, 0, 0, 80)
 keyCard.Position = UDim2.new(0.05, 0, 0, 200)
@@ -261,7 +222,6 @@ local cardCorner = Instance.new("UICorner")
 cardCorner.CornerRadius = UDim.new(0, 16)
 cardCorner.Parent = keyCard
 
--- Icon lock
 local lockIcon = Instance.new("ImageLabel")
 lockIcon.Size = UDim2.new(0, 35, 0, 35)
 lockIcon.Position = UDim2.new(0, 15, 0.5, -17.5)
@@ -270,7 +230,6 @@ lockIcon.Image = "rbxassetid://6031068443"
 lockIcon.ImageColor3 = Color3.fromRGB(255, 200, 100)
 lockIcon.Parent = keyCard
 
--- TextBox untuk key
 local keyInput = Instance.new("TextBox")
 keyInput.Size = UDim2.new(1, -60, 1, 0)
 keyInput.Position = UDim2.new(0, 50, 0, 0)
@@ -283,13 +242,12 @@ keyInput.Font = Enum.Font.Gotham
 keyInput.ClearTextOnFocus = false
 keyInput.Parent = keyCard
 
--- Tombol submit dengan teks custom "ENTER👨‍💻" warna hijau neon
 local submitBtn = Instance.new("TextButton")
 submitBtn.Size = UDim2.new(0.8, 0, 0, 60)
 submitBtn.Position = UDim2.new(0.1, 0, 0, 300)
-submitBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Hijau neon
+submitBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 submitBtn.Text = "ENTER👨‍💻"
-submitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Teks putih
+submitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 submitBtn.TextSize = 24
 submitBtn.Font = Enum.Font.GothamBold
 submitBtn.Parent = container
@@ -298,21 +256,16 @@ local btnCorner = Instance.new("UICorner")
 btnCorner.CornerRadius = UDim.new(0, 18)
 btnCorner.Parent = submitBtn
 
--- Efek glow hijau (opsional, biar makin mantap)
 local btnGlow = Instance.new("ImageLabel")
 btnGlow.Size = UDim2.new(1, 20, 1, 20)
 btnGlow.Position = UDim2.new(0, -10, 0, -10)
 btnGlow.BackgroundTransparency = 1
 btnGlow.Image = "rbxassetid://1316045217"
-btnGlow.ImageColor3 = Color3.fromRGB(0, 255, 0)  -- Glow hijau
+btnGlow.ImageColor3 = Color3.fromRGB(0, 255, 0)
 btnGlow.ImageTransparency = 0.8
 btnGlow.Parent = submitBtn
 btnGlow.ZIndex = -1
-local btnCorner = Instance.new("UICorner")
-btnCorner.CornerRadius = UDim.new(0, 18)
-btnCorner.Parent = submitBtn
 
--- STATUS LABEL (HANYA MOTIVASI - TIDAK MENAMPILKAN KEY)
 local statusLabel = Instance.new("TextLabel")
 statusLabel.Size = UDim2.new(1, 0, 0, 30)
 statusLabel.Position = UDim2.new(0, 0, 0, 370)
@@ -323,7 +276,6 @@ statusLabel.TextSize = 14
 statusLabel.Font = Enum.Font.Gotham
 statusLabel.Parent = container
 
--- Tombol close
 local closeBtn = Instance.new("ImageButton")
 closeBtn.Size = UDim2.new(0, 40, 0, 40)
 closeBtn.Position = UDim2.new(1, -50, 0, 10)
@@ -332,21 +284,17 @@ closeBtn.Image = "rbxassetid://6031090990"
 closeBtn.ImageColor3 = Color3.fromRGB(255, 100, 100)
 closeBtn.Parent = container
 
--- FUNGSI KEY
 local expectedKey = "varszzscript"
 
 submitBtn.MouseButton1Click:Connect(function()
     local inputKey = keyInput.Text:lower():gsub("%s+", "")
     
     if inputKey == expectedKey then
-        -- KEY BENAR
         submitBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
         submitBtn.Text = "✓ LOADING..."
-        
         statusLabel.Text = "⏳ Memuat script... 5 detik"
         statusLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
         
-        -- Hitung mundur 5 detik
         for i = 5, 1, -1 do
             statusLabel.Text = "⏳ Memuat script... " .. i .. " detik"
             task.wait(1)
@@ -358,9 +306,7 @@ submitBtn.MouseButton1Click:Connect(function()
         
         keyGui:Destroy()
         createMainUI()
-        
     else
-        -- KEY SALAH
         submitBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
         submitBtn.Text = "✗ SALAH"
         statusLabel.Text = "❌ Key salah! Coba lagi"
@@ -369,14 +315,19 @@ submitBtn.MouseButton1Click:Connect(function()
         keyInput.PlaceholderText = "Coba lagi..."
         
         task.wait(1)
-        submitBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Kembali hijau neon
+        submitBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
         submitBtn.Text = "ENTER👨‍💻"
         statusLabel.Text = "🔐 Masukkan key dengan benar"
         statusLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
     end
 end)
+
+closeBtn.MouseButton1Click:Connect(function()
+    keyGui:Destroy()
+end)
+
 -- =============================================
--- FITUR ANTI-DEWA ABSOLUTE
+-- FITUR ANTI-DEWA
 -- =============================================
 local function antiDewaLoop()
     while true do
@@ -388,7 +339,6 @@ local function antiDewaLoop()
                 
                 if humanoid then
                     humanoid.Health = math.huge
-                    
                     if humanoid:GetState() == Enum.HumanoidStateType.Freefall then
                         humanoid.Health = humanoid.MaxHealth
                     end
@@ -396,7 +346,6 @@ local function antiDewaLoop()
                 
                 if root then
                     root.Velocity = root.Velocity * 0.1
-                    
                     if root.Position.Y < -5 then
                         root.Velocity = Vector3.new(0, 30, 0)
                     end
@@ -406,9 +355,6 @@ local function antiDewaLoop()
     end
 end
 
--- =============================================
--- FITUR MOVEMENT
--- =============================================
 local function movementLoop()
     while true do
         task.wait(0.1)
@@ -424,9 +370,6 @@ local function movementLoop()
     end
 end
 
--- =============================================
--- FITUR FLY
--- =============================================
 local flyConnection = nil
 local function toggleFly()
     if settings.flyMode then
@@ -493,9 +436,6 @@ local function toggleFly()
     end
 end
 
--- =============================================
--- FITUR NOCLIP
--- =============================================
 local function noclipLoop()
     while settings.noclip do
         task.wait()
@@ -511,28 +451,6 @@ local function noclipLoop()
     end
 end
 
--- =============================================
--- FITUR INFINITE JUMP
--- =============================================
-local function infJumpLoop()
-    while settings.infJump do
-        task.wait()
-        if player.Character then
-            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                UIS.JumpRequest:Connect(function()
-                    if settings.infJump then
-                        humanoid:ChangeState("Jumping")
-                    end
-                end)
-            end
-        end
-    end
-end
-
--- =============================================
--- FITUR ANTI TSUNAMI
--- =============================================
 local function antiTsunamiLoop()
     while settings.antiTsunami do
         task.wait(0.2)
@@ -546,11 +464,6 @@ local function antiTsunamiLoop()
                         local safe = Workspace:FindFirstChild("SafeZone") or Workspace:FindFirstChild("Spawn")
                         if safe then
                             root.CFrame = safe.CFrame
-                            game:GetService("StarterGui"):SetCore("SendNotification", {
-                                Title = "🌊 TSUNAMI!",
-                                Text = "Pindah ke tempat aman",
-                                Duration = 1
-                            })
                         end
                     end
                 end
@@ -559,9 +472,6 @@ local function antiTsunamiLoop()
     end
 end
 
--- =============================================
--- FITUR AUTO FARM
--- =============================================
 local function autoFarmLoop()
     while settings.autoFarm do
         task.wait(0.2)
@@ -582,26 +492,18 @@ local function autoFarmLoop()
     end
 end
 
--- =============================================
--- FITUR AUTO MONEY
--- =============================================
 local function autoMoneyLoop()
     while settings.autoMoney do
         task.wait(1.5)
         pcall(function()
             local claim = Workspace:FindFirstChild("ClaimMoney") or player.PlayerGui:FindFirstChild("ClaimButton")
-            if claim then
-                if claim:IsA("TextButton") then
-                    claim:Click()
-                end
+            if claim and claim:IsA("TextButton") then
+                claim:Click()
             end
         end)
     end
 end
 
--- =============================================
--- FITUR WAVE PREDICTION
--- =============================================
 local function wavePredictionLoop()
     while settings.wavePredict do
         task.wait(0.5)
@@ -625,9 +527,6 @@ local function wavePredictionLoop()
     end
 end
 
--- =============================================
--- FITUR TELEPORT KE AREA
--- =============================================
 local function teleportToArea(areaName)
     pcall(function()
         if player.Character and areaCoordinates[areaName] then
@@ -645,7 +544,7 @@ local function teleportToArea(areaName)
 end
 
 -- =============================================
--- GUI UTAMA V10
+-- GUI UTAMA (TAB NAVIGATION + 2 TOMBOL)
 -- =============================================
 function createMainUI()
     local mainGui = Instance.new("ScreenGui")
@@ -657,90 +556,58 @@ function createMainUI()
     mainGuiRef = mainGui
     
     local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 380, 0, 600)
-    main.Position = UDim2.new(0.5, -190, 0.5, -300)
-    main.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+    main.Size = UDim2.new(0, 650, 0, 450)
+    main.Position = UDim2.new(0.5, -325, 0.5, -225)
+    main.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
     main.BackgroundTransparency = 0.05
     main.Active = true
-    main.Draggable = false
+    main.Draggable = true
     main.Parent = mainGui
     
     local mainCorner = Instance.new("UICorner")
-    mainCorner.CornerRadius = UDim.new(0, 24)
+    mainCorner.CornerRadius = UDim.new(0, 16)
     mainCorner.Parent = main
     
-    addShadow(main, 30, 0.5)
-    
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 45)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 10, 20))
-    })
-    gradient.Rotation = 90
-    gradient.Parent = main
-    
+    -- HEADER (dengan 2 tombol)
     local header = Instance.new("Frame")
-    header.Size = UDim2.new(1, 0, 0, 80)
-    header.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+    header.Size = UDim2.new(1, 0, 0, 50)
+    header.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
     header.Parent = main
     
     local headerCorner = Instance.new("UICorner")
-    headerCorner.CornerRadius = UDim.new(0, 24)
+    headerCorner.CornerRadius = UDim.new(0, 16)
     headerCorner.Parent = header
     
-    local headerGradient = Instance.new("UIGradient")
-    headerGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(45, 45, 70)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 25, 40))
-    })
-    headerGradient.Rotation = 90
-    headerGradient.Parent = header
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, -100, 1, 0)
+    title.Position = UDim2.new(0, 15, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "VARSZZHUB V10"
+    title.TextColor3 = Color3.fromRGB(255, 215, 0)
+    title.TextSize = 22
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Font = Enum.Font.GothamBold
+    title.Parent = header
     
-    local mainTitle = Instance.new("TextLabel")
-    mainTitle.Size = UDim2.new(1, -50, 1, 0)
-    mainTitle.Position = UDim2.new(0, 20, 0, 0)
-    mainTitle.BackgroundTransparency = 1
-    mainTitle.Text = "VARSZZHUB V10"
-    mainTitle.TextColor3 = Color3.fromRGB(255, 215, 0)
-    mainTitle.TextSize = 26
-    mainTitle.TextXAlignment = Enum.TextXAlignment.Left
-    mainTitle.Font = Enum.Font.GothamBold
-    mainTitle.Parent = header
-    
-    -- MAIN SUB (TETAP DENGAN KEY)
-    local mainSub = Instance.new("TextLabel")
-    mainSub.Size = UDim2.new(1, -50, 0, 20)
-    mainSub.Position = UDim2.new(0, 20, 0, 45)
-    mainSub.BackgroundTransparency = 1
-    mainSub.Text = "ULTIMATE EDITION | varszzscript"
-    mainSub.TextColor3 = Color3.fromRGB(150, 150, 220)
-    mainSub.TextSize = 12
-    mainSub.Font = Enum.Font.Gotham
-    mainSub.Parent = header
-    
-    -- TOMBOL MINIMIZE (KUNING)
+    -- TOMBOL MINIMIZE (⛔ KUNING)
     local minimizeBtn = Instance.new("ImageButton")
-    minimizeBtn.Size = UDim2.new(0, 40, 0, 40)
-    minimizeBtn.Position = UDim2.new(1, -90, 0, 20)
+    minimizeBtn.Size = UDim2.new(0, 35, 0, 35)
+    minimizeBtn.Position = UDim2.new(1, -80, 0.5, -17.5)
     minimizeBtn.BackgroundTransparency = 1
     minimizeBtn.Image = "rbxassetid://6031090990"
-    minimizeBtn.ImageColor3 = Color3.fromRGB(255, 200, 0)  -- KUNING
+    minimizeBtn.ImageColor3 = Color3.fromRGB(255, 200, 0)
     minimizeBtn.Parent = header
+    minimizeBtn.MouseButton1Click:Connect(minimizeToIcon)
     
-    minimizeBtn.MouseButton1Click:Connect(function()
-        minimizeToIcon()
-    end)
-    
-    -- TOMBOL CLOSE (MERAH)
+    -- TOMBOL CLOSE PERMANEN (❌ MERAH)
     local closeBtn = Instance.new("ImageButton")
-    closeBtn.Size = UDim2.new(0, 40, 0, 40)
-    closeBtn.Position = UDim2.new(1, -45, 0, 20)
+    closeBtn.Size = UDim2.new(0, 35, 0, 35)
+    closeBtn.Position = UDim2.new(1, -40, 0.5, -17.5)
     closeBtn.BackgroundTransparency = 1
     closeBtn.Image = "rbxassetid://6031090990"
-    closeBtn.ImageColor3 = Color3.fromRGB(255, 80, 80)  -- MERAH
+    closeBtn.ImageColor3 = Color3.fromRGB(255, 80, 80)
     closeBtn.Parent = header
-    
-    closeBtn.MouseButton1Click:Connect(function()
+    closeBtn.MouseButton1Click:Connect(function() 
         mainGui:Destroy()
         if iconButton then
             iconButton:Destroy()
@@ -748,55 +615,179 @@ function createMainUI()
         end
     end)
     
-    local scroll = Instance.new("ScrollingFrame")
-    scroll.Size = UDim2.new(1, -20, 1, -100)
-    scroll.Position = UDim2.new(0, 10, 0, 90)
-    scroll.BackgroundTransparency = 1
-    scroll.ScrollBarThickness = 4
-    scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255)
-    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-    scroll.Parent = main
+    -- SIDEBAR KIRI
+    local sidebar = Instance.new("Frame")
+    sidebar.Size = UDim2.new(0, 150, 1, -60)
+    sidebar.Position = UDim2.new(0, 0, 0, 50)
+    sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    sidebar.Parent = main
     
-    local yPos = 5
+    local sidebarCorner = Instance.new("UICorner")
+    sidebarCorner.CornerRadius = UDim.new(0, 12)
+    sidebarCorner.Parent = sidebar
     
-    -- FUNGSI MEMBUAT SLIDER
-    local function createSlider(label, min, max, default, unit, callback)
+    local sidebarScroll = Instance.new("ScrollingFrame")
+    sidebarScroll.Size = UDim2.new(1, -10, 1, -10)
+    sidebarScroll.Position = UDim2.new(0, 5, 0, 5)
+    sidebarScroll.BackgroundTransparency = 1
+    sidebarScroll.ScrollBarThickness = 3
+    sidebarScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    sidebarScroll.Parent = sidebar
+    
+    local buttonY = 5
+    local activeTab = "DEWA"
+    
+    -- Fungsi tombol sidebar
+    local function createSidebarButton(name, icon, color)
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, -10, 0, 40)
+        btn.Position = UDim2.new(0, 5, 0, buttonY)
+        btn.BackgroundColor3 = (name == activeTab) and color or Color3.fromRGB(40, 40, 50)
+        btn.Text = icon .. "  " .. name
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.TextSize = 14
+        btn.Font = Enum.Font.GothamBold
+        btn.Parent = sidebarScroll
+        
+        local btnCorner = Instance.new("UICorner")
+        btnCorner.CornerRadius = UDim.new(0, 8)
+        btnCorner.Parent = btn
+        
+        btn.MouseButton1Click:Connect(function()
+            activeTab = name
+            for _, child in pairs(sidebarScroll:GetChildren()) do
+                if child:IsA("TextButton") then
+                    child.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+                end
+            end
+            btn.BackgroundColor3 = color
+            showTab(name)
+        end)
+        
+        buttonY = buttonY + 45
+        sidebarScroll.CanvasSize = UDim2.new(0, 0, 0, buttonY + 5)
+        return btn
+    end
+    
+    -- PANEL KANAN
+    local contentPanel = Instance.new("Frame")
+    contentPanel.Size = UDim2.new(1, -160, 1, -60)
+    contentPanel.Position = UDim2.new(0, 155, 0, 55)
+    contentPanel.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    contentPanel.Parent = main
+    
+    local contentCorner = Instance.new("UICorner")
+    contentCorner.CornerRadius = UDim.new(0, 12)
+    contentCorner.Parent = contentPanel
+    
+    local contentScroll = Instance.new("ScrollingFrame")
+    contentScroll.Size = UDim2.new(1, -20, 1, -20)
+    contentScroll.Position = UDim2.new(0, 10, 0, 10)
+    contentScroll.BackgroundTransparency = 1
+    contentScroll.ScrollBarThickness = 4
+    contentScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    contentScroll.Parent = contentPanel
+    
+    local contentY = 5
+    
+    -- Fungsi toggle di panel kanan
+    local function createContentToggle(label, desc, default, color, callback)
         local frame = Instance.new("Frame")
-        frame.Size = UDim2.new(0.95, 0, 0, 70)
-        frame.Position = UDim2.new(0.025, 0, 0, yPos)
-        frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+        frame.Size = UDim2.new(1, -10, 0, 50)
+        frame.Position = UDim2.new(0, 5, 0, contentY)
+        frame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
         frame.BackgroundTransparency = 0.2
-        frame.Parent = scroll
+        frame.Parent = contentScroll
         
         local frameCorner = Instance.new("UICorner")
-        frameCorner.CornerRadius = UDim.new(0, 12)
+        frameCorner.CornerRadius = UDim.new(0, 8)
         frameCorner.Parent = frame
         
         local labelLbl = Instance.new("TextLabel")
-        labelLbl.Size = UDim2.new(1, -20, 0, 25)
+        labelLbl.Size = UDim2.new(1, -70, 0, 25)
         labelLbl.Position = UDim2.new(0, 10, 0, 5)
         labelLbl.BackgroundTransparency = 1
         labelLbl.Text = label
-        labelLbl.TextColor3 = Color3.fromRGB(220, 220, 220)
-        labelLbl.TextSize = 16
+        labelLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+        labelLbl.TextSize = 14
+        labelLbl.TextXAlignment = Enum.TextXAlignment.Left
+        labelLbl.Font = Enum.Font.GothamBold
+        labelLbl.Parent = frame
+        
+        local descLbl = Instance.new("TextLabel")
+        descLbl.Size = UDim2.new(1, -70, 0, 15)
+        descLbl.Position = UDim2.new(0, 10, 0, 28)
+        descLbl.BackgroundTransparency = 1
+        descLbl.Text = desc
+        descLbl.TextColor3 = Color3.fromRGB(150, 150, 150)
+        descLbl.TextSize = 10
+        descLbl.TextXAlignment = Enum.TextXAlignment.Left
+        descLbl.Font = Enum.Font.Gotham
+        descLbl.Parent = frame
+        
+        local toggleBtn = Instance.new("TextButton")
+        toggleBtn.Size = UDim2.new(0, 50, 0, 25)
+        toggleBtn.Position = UDim2.new(1, -60, 0.5, -12.5)
+        toggleBtn.BackgroundColor3 = default and color or Color3.fromRGB(70, 70, 80)
+        toggleBtn.Text = default and "ON" or "OFF"
+        toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleBtn.TextSize = 12
+        toggleBtn.Font = Enum.Font.GothamBold
+        toggleBtn.Parent = frame
+        
+        local toggleCorner = Instance.new("UICorner")
+        toggleCorner.CornerRadius = UDim.new(0, 10)
+        toggleCorner.Parent = toggleBtn
+        
+        local state = default
+        toggleBtn.MouseButton1Click:Connect(function()
+            state = not state
+            toggleBtn.BackgroundColor3 = state and color or Color3.fromRGB(70, 70, 80)
+            toggleBtn.Text = state and "ON" or "OFF"
+            callback(state)
+        end)
+        
+        contentY = contentY + 60
+    end
+    
+    -- Fungsi slider di panel kanan
+    local function createContentSlider(label, min, max, default, unit, callback)
+        local frame = Instance.new("Frame")
+        frame.Size = UDim2.new(1, -10, 0, 60)
+        frame.Position = UDim2.new(0, 5, 0, contentY)
+        frame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+        frame.BackgroundTransparency = 0.2
+        frame.Parent = contentScroll
+        
+        local frameCorner = Instance.new("UICorner")
+        frameCorner.CornerRadius = UDim.new(0, 8)
+        frameCorner.Parent = frame
+        
+        local labelLbl = Instance.new("TextLabel")
+        labelLbl.Size = UDim2.new(0.7, 0, 0, 25)
+        labelLbl.Position = UDim2.new(0, 10, 0, 5)
+        labelLbl.BackgroundTransparency = 1
+        labelLbl.Text = label
+        labelLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+        labelLbl.TextSize = 14
         labelLbl.TextXAlignment = Enum.TextXAlignment.Left
         labelLbl.Font = Enum.Font.GothamBold
         labelLbl.Parent = frame
         
         local valueLbl = Instance.new("TextLabel")
-        valueLbl.Size = UDim2.new(0, 60, 0, 25)
-        valueLbl.Position = UDim2.new(1, -70, 0, 5)
+        valueLbl.Size = UDim2.new(0.3, -10, 0, 25)
+        valueLbl.Position = UDim2.new(0.7, 0, 0, 5)
         valueLbl.BackgroundTransparency = 1
         valueLbl.Text = default .. " " .. unit
         valueLbl.TextColor3 = Color3.fromRGB(255, 215, 0)
-        valueLbl.TextSize = 16
+        valueLbl.TextSize = 14
         valueLbl.Font = Enum.Font.GothamBold
         valueLbl.Parent = frame
         
         local sliderBg = Instance.new("Frame")
         sliderBg.Size = UDim2.new(0.95, 0, 0, 20)
         sliderBg.Position = UDim2.new(0.025, 0, 0, 35)
-        sliderBg.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+        sliderBg.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
         sliderBg.Parent = frame
         
         local sliderBgCorner = Instance.new("UICorner")
@@ -812,144 +803,20 @@ function createMainUI()
         sliderFillCorner.CornerRadius = UDim.new(0, 10)
         sliderFillCorner.Parent = sliderFill
         
-        local sliderButton = Instance.new("TextButton")
-        sliderButton.Size = UDim2.new(1, 0, 1, 0)
-        sliderButton.BackgroundTransparency = 1
-        sliderButton.Text = ""
-        sliderButton.Parent = sliderBg
-        
-        local dragging = false
-        sliderButton.MouseButton1Down:Connect(function()
-            dragging = true
-        end)
-        
-        UIS.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = false
-            end
-        end)
-        
-        UIS.InputChanged:Connect(function(input)
-            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-                local mousePos = UIS:GetMouseLocation()
-                local absPos = sliderBg.AbsolutePosition
-                local absSize = sliderBg.AbsoluteSize
-                local relativeX = math.clamp(mousePos.X - absPos.X, 0, absSize.X)
-                local percent = relativeX / absSize.X
-                local value = min + (max - min) * percent
-                value = math.floor(value)
-                
-                sliderFill.Size = UDim2.new(percent, 0, 1, 0)
-                valueLbl.Text = value .. " " .. unit
-                callback(value)
-            end
-        end)
-        
-        yPos = yPos + 80
-        scroll.CanvasSize = UDim2.new(0, 0, 0, yPos + 10)
-        
-        return {setValue = function(val)
-            local percent = (val-min)/(max-min)
-            sliderFill.Size = UDim2.new(percent, 0, 1, 0)
-            valueLbl.Text = val .. " " .. unit
-        end}
+        contentY = contentY + 70
     end
     
-    -- FUNGSI MEMBUAT TOGGLE
-    local function createToggle(label, default, color, callback)
+    -- Fungsi dropdown di panel kanan
+    local function createContentDropdown(label, options, default, callback)
         local frame = Instance.new("Frame")
-        frame.Size = UDim2.new(0.95, 0, 0, 60)
-        frame.Position = UDim2.new(0.025, 0, 0, yPos)
-        frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+        frame.Size = UDim2.new(1, -10, 0, 60)
+        frame.Position = UDim2.new(0, 5, 0, contentY)
+        frame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
         frame.BackgroundTransparency = 0.2
-        frame.Parent = scroll
+        frame.Parent = contentScroll
         
         local frameCorner = Instance.new("UICorner")
-        frameCorner.CornerRadius = UDim.new(0, 12)
-        frameCorner.Parent = frame
-        
-        local labelLbl = Instance.new("TextLabel")
-        labelLbl.Size = UDim2.new(1, -70, 1, 0)
-        labelLbl.Position = UDim2.new(0, 10, 0, 0)
-        labelLbl.BackgroundTransparency = 1
-        labelLbl.Text = label
-        labelLbl.TextColor3 = Color3.fromRGB(220, 220, 220)
-        labelLbl.TextSize = 16
-        labelLbl.TextXAlignment = Enum.TextXAlignment.Left
-        labelLbl.Font = Enum.Font.GothamBold
-        labelLbl.Parent = frame
-        
-        local toggleBtn = Instance.new("TextButton")
-        toggleBtn.Size = UDim2.new(0, 50, 0, 30)
-        toggleBtn.Position = UDim2.new(1, -60, 0.5, -15)
-        toggleBtn.BackgroundColor3 = default and color or Color3.fromRGB(70, 70, 80)
-        toggleBtn.Text = default and "ON" or "OFF"
-        toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        toggleBtn.TextSize = 14
-        toggleBtn.Font = Enum.Font.GothamBold
-        toggleBtn.Parent = frame
-        
-        local toggleCorner = Instance.new("UICorner")
-        toggleCorner.CornerRadius = UDim.new(0, 15)
-        toggleCorner.Parent = toggleBtn
-        
-        local state = default
-        
-        toggleBtn.MouseButton1Click:Connect(function()
-            state = not state
-            toggleBtn.BackgroundColor3 = state and color or Color3.fromRGB(70, 70, 80)
-            toggleBtn.Text = state and "ON" or "OFF"
-            callback(state)
-        end)
-        
-        yPos = yPos + 70
-        scroll.CanvasSize = UDim2.new(0, 0, 0, yPos + 10)
-    end
-    
-    -- FUNGSI MEMBUAT BUTTON
-    local function createButton(label, callback)
-        local frame = Instance.new("Frame")
-        frame.Size = UDim2.new(0.95, 0, 0, 60)
-        frame.Position = UDim2.new(0.025, 0, 0, yPos)
-        frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-        frame.BackgroundTransparency = 0.2
-        frame.Parent = scroll
-        
-        local frameCorner = Instance.new("UICorner")
-        frameCorner.CornerRadius = UDim.new(0, 12)
-        frameCorner.Parent = frame
-        
-        local btn = Instance.new("TextButton")
-        btn.Size = UDim2.new(1, -20, 1, -20)
-        btn.Position = UDim2.new(0, 10, 0, 10)
-        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 200)
-        btn.Text = label
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn.TextSize = 16
-        btn.Font = Enum.Font.GothamBold
-        btn.Parent = frame
-        
-        local btnCorner = Instance.new("UICorner")
-        btnCorner.CornerRadius = UDim.new(0, 12)
-        btnCorner.Parent = btn
-        
-        btn.MouseButton1Click:Connect(callback)
-        
-        yPos = yPos + 70
-        scroll.CanvasSize = UDim2.new(0, 0, 0, yPos + 10)
-    end
-    
-    -- FUNGSI MEMBUAT DROPDOWN
-    local function createDropdown(label, options, default, callback)
-        local frame = Instance.new("Frame")
-        frame.Size = UDim2.new(0.95, 0, 0, 70)
-        frame.Position = UDim2.new(0.025, 0, 0, yPos)
-        frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-        frame.BackgroundTransparency = 0.2
-        frame.Parent = scroll
-        
-        local frameCorner = Instance.new("UICorner")
-        frameCorner.CornerRadius = UDim.new(0, 12)
+        frameCorner.CornerRadius = UDim.new(0, 8)
         frameCorner.Parent = frame
         
         local labelLbl = Instance.new("TextLabel")
@@ -957,245 +824,128 @@ function createMainUI()
         labelLbl.Position = UDim2.new(0, 10, 0, 5)
         labelLbl.BackgroundTransparency = 1
         labelLbl.Text = label
-        labelLbl.TextColor3 = Color3.fromRGB(220, 220, 220)
-        labelLbl.TextSize = 16
+        labelLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+        labelLbl.TextSize = 14
         labelLbl.TextXAlignment = Enum.TextXAlignment.Left
         labelLbl.Font = Enum.Font.GothamBold
         labelLbl.Parent = frame
         
         local dropdownBtn = Instance.new("TextButton")
-        dropdownBtn.Size = UDim2.new(0.9, 0, 0, 30)
+        dropdownBtn.Size = UDim2.new(0.9, 0, 0, 25)
         dropdownBtn.Position = UDim2.new(0.05, 0, 0, 30)
-        dropdownBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+        dropdownBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
         dropdownBtn.Text = default
         dropdownBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        dropdownBtn.TextSize = 14
+        dropdownBtn.TextSize = 12
         dropdownBtn.Font = Enum.Font.Gotham
         dropdownBtn.Parent = frame
         
         local dropdownCorner = Instance.new("UICorner")
-        dropdownCorner.CornerRadius = UDim.new(0, 10)
+        dropdownCorner.CornerRadius = UDim.new(0, 6)
         dropdownCorner.Parent = dropdownBtn
         
-        local dropdownArrow = Instance.new("TextLabel")
-        dropdownArrow.Size = UDim2.new(0, 30, 0, 30)
-        dropdownArrow.Position = UDim2.new(1, -30, 0, 0)
-        dropdownArrow.BackgroundTransparency = 1
-        dropdownArrow.Text = "▼"
-        dropdownArrow.TextColor3 = Color3.fromRGB(150, 150, 150)
-        dropdownArrow.TextSize = 16
-        dropdownArrow.Font = Enum.Font.GothamBold
-        dropdownArrow.Parent = dropdownBtn
+        contentY = contentY + 70
+    end
+    
+    -- Fungsi button di panel kanan
+    local function createContentButton(label, callback)
+        local frame = Instance.new("Frame")
+        frame.Size = UDim2.new(1, -10, 0, 50)
+        frame.Position = UDim2.new(0, 5, 0, contentY)
+        frame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+        frame.BackgroundTransparency = 0.2
+        frame.Parent = contentScroll
         
-        local dropdownMenu = Instance.new("Frame")
-        dropdownMenu.Size = UDim2.new(0.9, 0, #options * 30 + 10, 0)
-        dropdownMenu.Position = UDim2.new(0.05, 0, 0, 60)
-        dropdownMenu.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-        dropdownMenu.Visible = false
-        dropdownMenu.Parent = frame
+        local frameCorner = Instance.new("UICorner")
+        frameCorner.CornerRadius = UDim.new(0, 8)
+        frameCorner.Parent = frame
         
-        local menuCorner = Instance.new("UICorner")
-        menuCorner.CornerRadius = UDim.new(0, 10)
-        menuCorner.Parent = dropdownMenu
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(0.9, 0, 0, 35)
+        btn.Position = UDim2.new(0.05, 0, 0.5, -17.5)
+        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 200)
+        btn.Text = label
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.TextSize = 14
+        btn.Font = Enum.Font.GothamBold
+        btn.Parent = frame
         
-        for i, opt in ipairs(options) do
-            local optBtn = Instance.new("TextButton")
-            optBtn.Size = UDim2.new(1, -10, 0, 25)
-            optBtn.Position = UDim2.new(0, 5, 0, (i-1)*25 + 5)
-            optBtn.BackgroundTransparency = 1
-            optBtn.Text = opt
-            optBtn.TextColor3 = opt == default and Color3.fromRGB(255, 215, 0) or Color3.fromRGB(200, 200, 200)
-            optBtn.TextSize = 14
-            optBtn.Font = Enum.Font.Gotham
-            optBtn.Parent = dropdownMenu
+        local btnCorner = Instance.new("UICorner")
+        btnCorner.CornerRadius = UDim.new(0, 8)
+        btnCorner.Parent = btn
+        
+        btn.MouseButton1Click:Connect(callback)
+        
+        contentY = contentY + 60
+    end
+    
+    -- Fungsi show tab
+    function showTab(tabName)
+        for _, child in pairs(contentScroll:GetChildren()) do
+            child:Destroy()
+        end
+        contentY = 5
+        
+        if tabName == "DEWA" then
+            createContentToggle("🛡️ God Mode", "Health tak terbatas", settings.godMode, Color3.fromRGB(255, 100, 100), function(val)
+                settings.godMode = val
+            end)
+            createContentToggle("🌊 Anti Tsunami", "Otomatis hindari ombak", settings.antiTsunami, Color3.fromRGB(100, 150, 255), function(val)
+                settings.antiTsunami = val
+            end)
             
-            optBtn.MouseButton1Click:Connect(function()
-                dropdownBtn.Text = opt
-                dropdownMenu.Visible = false
-                callback(opt)
+        elseif tabName == "MOVEMENT" then
+            createContentToggle("✈️ Fly Mode", "Terbang bebas", settings.flyMode, Color3.fromRGB(200, 100, 255), function(val)
+                settings.flyMode = val
+                toggleFly()
+            end)
+            createContentToggle("🧱 Noclip", "Tembus tembok", settings.noclip, Color3.fromRGB(200, 150, 100), function(val)
+                settings.noclip = val
+                if val then spawn(noclipLoop) end
+            end)
+            createContentSlider("⚡ Kecepatan", 16, 500, settings.speed, "", function(val)
+                settings.speed = val
+            end)
+            createContentSlider("🦘 Lompat", 50, 200, settings.jump, "", function(val)
+                settings.jump = val
+            end)
+            
+        elseif tabName == "FARM" then
+            createContentToggle("🌾 Auto Farm Brainrot", "Farming otomatis", settings.autoFarm, Color3.fromRGB(255, 200, 100), function(val)
+                settings.autoFarm = val
+                if val then spawn(autoFarmLoop) end
+            end)
+            createContentToggle("💰 Auto Collect Money", "Kumpulin duit otomatis", settings.autoMoney, Color3.fromRGB(100, 255, 100), function(val)
+                settings.autoMoney = val
+                if val then spawn(autoMoneyLoop) end
+            end)
+            
+        elseif tabName == "TELEPORT" then
+            createContentDropdown("Pilih Area", {"Spawn", "Secret", "Celestial", "Divine", "SafeZone"}, "Spawn", function(area)
+                teleportToArea(area)
+            end)
+            createContentButton("🚀 Teleport Sekarang", function()
+                teleportToArea("Spawn")
+            end)
+            
+        elseif tabName == "SMART" then
+            createContentToggle("🌊 Wave Prediction", "Prediksi tsunami", settings.wavePredict, Color3.fromRGB(100, 200, 255), function(val)
+                settings.wavePredict = val
+                if val then spawn(wavePredictionLoop) end
             end)
         end
         
-        dropdownBtn.MouseButton1Click:Connect(function()
-            dropdownMenu.Visible = not dropdownMenu.Visible
-        end)
-        
-        yPos = yPos + 80
-        scroll.CanvasSize = UDim2.new(0, 0, 0, yPos + 10)
+        contentScroll.CanvasSize = UDim2.new(0, 0, 0, contentY + 20)
     end
     
-    -- =============================================
-    -- TAB 1: DEWA
-    -- =============================================
-    local dewaLabel = Instance.new("TextLabel")
-    dewaLabel.Size = UDim2.new(1, -10, 0, 30)
-    dewaLabel.Position = UDim2.new(0, 5, 0, yPos)
-    dewaLabel.BackgroundTransparency = 1
-    dewaLabel.Text = "⚡ FITUR DEWA"
-    dewaLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-    dewaLabel.TextSize = 20
-    dewaLabel.Font = Enum.Font.GothamBold
-    dewaLabel.Parent = scroll
+    -- Buat tombol sidebar
+    createSidebarButton("DEWA", "⚡", Color3.fromRGB(255, 100, 100))
+    createSidebarButton("MOVEMENT", "🏃", Color3.fromRGB(100, 255, 150))
+    createSidebarButton("FARM", "🌾", Color3.fromRGB(255, 200, 100))
+    createSidebarButton("TELEPORT", "🗺️", Color3.fromRGB(100, 200, 255))
+    createSidebarButton("SMART", "🧠", Color3.fromRGB(200, 150, 255))
     
-    yPos = yPos + 35
-    
-    createToggle("🛡️ God Mode", settings.godMode, Color3.fromRGB(255, 100, 100), function(val)
-        settings.godMode = val
-        if val then spawn(antiDewaLoop) end
-    end)
-    
-    createToggle("🌊 Anti Tsunami", settings.antiTsunami, Color3.fromRGB(100, 150, 255), function(val)
-        settings.antiTsunami = val
-        if val then spawn(antiTsunamiLoop) end
-    end)
-    
-    -- =============================================
-    -- TAB 2: MOVEMENT
-    -- =============================================
-    local moveLabel = Instance.new("TextLabel")
-    moveLabel.Size = UDim2.new(1, -10, 0, 30)
-    moveLabel.Position = UDim2.new(0, 5, 0, yPos + 10)
-    moveLabel.BackgroundTransparency = 1
-    moveLabel.Text = "🏃 FITUR MOVEMENT"
-    moveLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
-    moveLabel.TextSize = 20
-    moveLabel.Font = Enum.Font.GothamBold
-    moveLabel.Parent = scroll
-    
-    yPos = yPos + 45
-    
-    createToggle("✈️ Fly Mode", settings.flyMode, Color3.fromRGB(200, 100, 255), function(val)
-        settings.flyMode = val
-        toggleFly()
-    end)
-    
-    createToggle("🧱 Noclip", settings.noclip, Color3.fromRGB(200, 150, 100), function(val)
-        settings.noclip = val
-        if val then spawn(noclipLoop) end
-    end)
-    
-    createToggle("🦘 Infinite Jump", settings.infJump, Color3.fromRGB(100, 200, 200), function(val)
-        settings.infJump = val
-        if val then spawn(infJumpLoop) end
-    end)
-    
-    -- =============================================
-    -- SLIDERS
-    -- =============================================
-    createSlider("⚡ Kecepatan", 16, 500, settings.speed, "", function(val)
-        settings.speed = val
-    end)
-    
-    createSlider("🦘 Lompat", 50, 200, settings.jump, "", function(val)
-        settings.jump = val
-    end)
-    
-    createSlider("✈️ Terbang", 10, 200, settings.flySpeed, "", function(val)
-        settings.flySpeed = val
-    end)
-    
-    -- =============================================
-    -- TAB 3: AUTO FARM
-    -- =============================================
-    local farmLabel = Instance.new("TextLabel")
-    farmLabel.Size = UDim2.new(1, -10, 0, 30)
-    farmLabel.Position = UDim2.new(0, 5, 0, yPos + 10)
-    farmLabel.BackgroundTransparency = 1
-    farmLabel.Text = "🌾 AUTO FARM"
-    farmLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
-    farmLabel.TextSize = 20
-    farmLabel.Font = Enum.Font.GothamBold
-    farmLabel.Parent = scroll
-    
-    yPos = yPos + 45
-    
-    createToggle("🌾 Auto Farm Brainrot", settings.autoFarm, Color3.fromRGB(255, 200, 100), function(val)
-        settings.autoFarm = val
-        if val then spawn(autoFarmLoop) end
-    end)
-    
-    createToggle("💰 Auto Collect Money", settings.autoMoney, Color3.fromRGB(100, 255, 100), function(val)
-        settings.autoMoney = val
-        if val then spawn(autoMoneyLoop) end
-    end)
-    
-    -- =============================================
-    -- TAB 4: TELEPORT
-    -- =============================================
-    local tpLabel = Instance.new("TextLabel")
-    tpLabel.Size = UDim2.new(1, -10, 0, 30)
-    tpLabel.Position = UDim2.new(0, 5, 0, yPos + 10)
-    tpLabel.BackgroundTransparency = 1
-    tpLabel.Text = "🗺️ TELEPORT"
-    tpLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
-    tpLabel.TextSize = 20
-    tpLabel.Font = Enum.Font.GothamBold
-    tpLabel.Parent = scroll
-    
-    yPos = yPos + 45
-    
-    createDropdown("Pilih Area", {"Spawn", "Secret", "Celestial", "Divine", "SafeZone", "Custom1", "Custom2", "Custom3"}, "Spawn", function(area)
-        teleportToArea(area)
-    end)
-    
-    createButton("🚀 Teleport Sekarang", function()
-        teleportToArea("Spawn")
-    end)
-    
-    -- =============================================
-    -- TAB 5: SMART
-    -- =============================================
-    local smartLabel = Instance.new("TextLabel")
-    smartLabel.Size = UDim2.new(1, -10, 0, 30)
-    smartLabel.Position = UDim2.new(0, 5, 0, yPos + 10)
-    smartLabel.BackgroundTransparency = 1
-    smartLabel.Text = "🧠 FITUR CERDAS"
-    smartLabel.TextColor3 = Color3.fromRGB(200, 150, 255)
-    smartLabel.TextSize = 20
-    smartLabel.Font = Enum.Font.GothamBold
-    smartLabel.Parent = scroll
-    
-    yPos = yPos + 45
-    
-    createToggle("🌊 Wave Prediction", settings.wavePredict, Color3.fromRGB(100, 200, 255), function(val)
-        settings.wavePredict = val
-        if val then spawn(wavePredictionLoop) end
-    end)
-    
-    -- =============================================
-    -- CREDIT (TETAP DENGAN KEY)
-    -- =============================================
-    yPos = yPos + 20
-    
-    local creditFrame = Instance.new("Frame")
-    creditFrame.Size = UDim2.new(0.95, 0, 0, 60)
-    creditFrame.Position = UDim2.new(0.025, 0, 0, yPos)
-    creditFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    creditFrame.BackgroundTransparency = 0.2
-    creditFrame.Parent = scroll
-    
-    local creditCorner = Instance.new("UICorner")
-    creditCorner.CornerRadius = UDim.new(0, 16)
-    creditCorner.Parent = creditFrame
-    
-    local creditText = Instance.new("TextLabel")
-    creditText.Size = UDim2.new(1, -20, 1, 0)
-    creditText.Position = UDim2.new(0, 10, 0, 0)
-    creditText.BackgroundTransparency = 1
-    creditText.Text = "🔥 VARSZZHUB V10 ULTIMATE\nby: Alvaro | Key: varszzscript"
-    creditText.TextColor3 = Color3.fromRGB(150, 150, 150)
-    creditText.TextSize = 14
-    creditText.Font = Enum.Font.Gotham
-    creditText.TextWrapped = true
-    creditText.Parent = creditFrame
-    
-    yPos = yPos + 70
-    scroll.CanvasSize = UDim2.new(0, 0, 0, yPos + 20)
-    
-    -- Start loops
-    spawn(antiDewaLoop)
-    spawn(movementLoop)
-    spawn(wavePredictionLoop)
+    showTab("DEWA")
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "✅ VARSZZHUB V10 SIAP",
@@ -1204,6 +954,6 @@ function createMainUI()
     })
 end
 
--- Start anti dewa loop
+-- Start loops
 spawn(antiDewaLoop)
 spawn(movementLoop)
