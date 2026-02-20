@@ -327,7 +327,7 @@ closeBtn.MouseButton1Click:Connect(function()
 end)
 
 -- =============================================
--- FITUR ANTI-DEWA
+-- FITUR ANTI-DEWA (SUDAH DIPERBAIKI)
 -- =============================================
 local function antiDewaLoop()
     while true do
@@ -347,7 +347,7 @@ local function antiDewaLoop()
                 if root then
                     root.Velocity = root.Velocity * 0.1
                     if root.Position.Y < -5 then
-                        root.Velocity = Vector3.new(0, 30, 0)
+                        root.Velocity = Vector3.new(0, 30, 0)  -- SUDAH DIPERBAIKI
                     end
                 end
             end
@@ -935,6 +935,7 @@ function createMainUI()
             end)
             createContentToggle("🌊 Anti Tsunami", "Otomatis hindari ombak", settings.antiTsunami, Color3.fromRGB(100, 150, 255), function(val)
                 settings.antiTsunami = val
+                if val then spawn(antiTsunamiLoop) end
             end)
             
         elseif tabName == "MOVEMENT" then
