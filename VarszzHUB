@@ -355,6 +355,9 @@ local function antiDewaLoop()
     end
 end
 
+-- =============================================
+-- FITUR MOVEMENT
+-- =============================================
 local function movementLoop()
     while true do
         task.wait(0.1)
@@ -370,6 +373,9 @@ local function movementLoop()
     end
 end
 
+-- =============================================
+-- FITUR FLY
+-- =============================================
 local flyConnection = nil
 local function toggleFly()
     if settings.flyMode then
@@ -436,6 +442,9 @@ local function toggleFly()
     end
 end
 
+-- =============================================
+-- FITUR NOCLIP
+-- =============================================
 local function noclipLoop()
     while settings.noclip do
         task.wait()
@@ -451,6 +460,28 @@ local function noclipLoop()
     end
 end
 
+-- =============================================
+-- FITUR INFINITE JUMP
+-- =============================================
+local function infJumpLoop()
+    while settings.infJump do
+        task.wait()
+        if player.Character then
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                UIS.JumpRequest:Connect(function()
+                    if settings.infJump then
+                        humanoid:ChangeState("Jumping")
+                    end
+                end)
+            end
+        end
+    end
+end
+
+-- =============================================
+-- FITUR ANTI TSUNAMI
+-- =============================================
 local function antiTsunamiLoop()
     while settings.antiTsunami do
         task.wait(0.2)
@@ -472,6 +503,9 @@ local function antiTsunamiLoop()
     end
 end
 
+-- =============================================
+-- FITUR AUTO FARM
+-- =============================================
 local function autoFarmLoop()
     while settings.autoFarm do
         task.wait(0.2)
@@ -492,6 +526,9 @@ local function autoFarmLoop()
     end
 end
 
+-- =============================================
+-- FITUR AUTO MONEY
+-- =============================================
 local function autoMoneyLoop()
     while settings.autoMoney do
         task.wait(1.5)
@@ -504,6 +541,9 @@ local function autoMoneyLoop()
     end
 end
 
+-- =============================================
+-- FITUR WAVE PREDICTION
+-- =============================================
 local function wavePredictionLoop()
     while settings.wavePredict do
         task.wait(0.5)
@@ -527,6 +567,9 @@ local function wavePredictionLoop()
     end
 end
 
+-- =============================================
+-- FITUR TELEPORT KE AREA
+-- =============================================
 local function teleportToArea(areaName)
     pcall(function()
         if player.Character and areaCoordinates[areaName] then
@@ -902,6 +945,10 @@ function createMainUI()
             createContentToggle("🧱 Noclip", "Tembus tembok", settings.noclip, Color3.fromRGB(200, 150, 100), function(val)
                 settings.noclip = val
                 if val then spawn(noclipLoop) end
+            end)
+            createContentToggle("🦘 Infinite Jump", "Loncat berkali-kali", settings.infJump, Color3.fromRGB(100, 200, 200), function(val)
+                settings.infJump = val
+                if val then spawn(infJumpLoop) end
             end)
             createContentSlider("⚡ Kecepatan", 16, 500, settings.speed, "", function(val)
                 settings.speed = val
