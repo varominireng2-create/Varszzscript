@@ -146,7 +146,7 @@ local function minimizeToIcon()
 end
 
 -- =============================================
--- KEY SYSTEM
+-- KEY SYSTEM (BERSIH, TANPA DUPLIKASI)
 -- =============================================
 local keyGui = Instance.new("ScreenGui")
 keyGui.Name = "VarszzHubKey"
@@ -242,6 +242,7 @@ keyInput.Font = Enum.Font.Gotham
 keyInput.ClearTextOnFocus = false
 keyInput.Parent = keyCard
 
+-- TOMBOL SUBMIT (HANYA SATU, TIDAK DOBEL)
 local submitBtn = Instance.new("TextButton")
 submitBtn.Size = UDim2.new(0.8, 0, 0, 60)
 submitBtn.Position = UDim2.new(0.1, 0, 0, 300)
@@ -326,8 +327,8 @@ closeBtn.MouseButton1Click:Connect(function()
     keyGui:Destroy()
 end)
 
--- =============================================
--- FITUR ANTI-DEWA (SUDAH DIPERBAIKI)
+--  =============================================
+-- ABSOLUTE GOD MODE (KEBAL TSUNAMI)
 -- =============================================
 local function antiDewaLoop()
     while true do
@@ -337,25 +338,46 @@ local function antiDewaLoop()
                 local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
                 local root = player.Character:FindFirstChild("HumanoidRootPart")
                 
+                -- 1. HEALTH NORMAL (tetap dijaga)
                 if humanoid then
                     humanoid.Health = math.huge
-                    if humanoid:GetState() == Enum.HumanoidStateType.Freefall then
-                        humanoid.Health = humanoid.MaxHealth
+                end
+                
+                -- 2. DETEKSI TSUNAMI (Cegah insta-kill)
+                local tsunami = Workspace:FindFirstChild("Tsunami") or Workspace:FindFirstChild("Wave")
+                if tsunami and root then
+                    local distance = (root.Position - tsunami.Position).Magnitude
+                    
+                    -- Kalo tsunami terlalu dekat (ancamannya)
+                    if distance < 50 then
+                        -- Metode 1: Teleport ke safe zone
+                        local safeZone = Workspace:FindFirstChild("SafeZone") or Workspace:FindFirstChild("Spawn")
+                        if safeZone then
+                            root.CFrame = safeZone.CFrame
+                        else
+                            -- Metode 2: Loncat tinggi (kalo gak ada safe zone)
+                            root.Velocity = Vector3.new(0, 200, 0)
+                        end
+                        
+                        -- Metode 3: Forcefield sementara (anti OHK)
+                        local forceField = Instance.new("ForceField")
+                        forceField.Visible = false
+                        forceField.Parent = player.Character
+                        game:GetService("Debris"):AddItem(forceField, 2)
                     end
                 end
                 
+                -- 3. ANTI KNOCKBACK & DROWN (tetap sama)
                 if root then
                     root.Velocity = root.Velocity * 0.1
                     if root.Position.Y < -5 then
-                        root.Velocity = Vector3.new(0, 30, 0)  -- SUDAH DIPERBAIKI
+                        root.Velocity = Vector3.new(0, 50, 0)
                     end
                 end
             end
         end)
     end
-end
-
--- =============================================
+end =============================================
 -- FITUR MOVEMENT
 -- =============================================
 local function movementLoop()
