@@ -345,7 +345,7 @@ local function antiDewaLoop()
                     humanoid.Health = math.huge
                 end
                 
-                -- 2. DETEKSI TSUNAMI (CEGAH INSTA-KILL)
+                                -- 2. DETEKSI TSUNAMI (CEGAH INSTA-KILL)
                 local tsunami = Workspace:FindFirstChild("Tsunami") or Workspace:FindFirstChild("Wave") or Workspace:FindFirstChild("KillerWave")
                 if tsunami and root then
                     local distance = (root.Position - tsunami.Position).Magnitude
