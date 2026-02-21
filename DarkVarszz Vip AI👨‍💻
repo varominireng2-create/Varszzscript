@@ -1,12 +1,12 @@
-# Creator bypass
+# Creator bypass (tetep pake Indo)
 if 'varszz' in text.lower() or 'pembuat' in text.lower():
     self.vip_mode = True
-    return "✅ LANGSUNG VIP BOS! (CREATOR MODE)"
+    return "✅ VIP LANGSUNG BOS! (MODE PENCIPTA)"
 
-# Normal flow dengan key
+# Normal flow (Indo semua)
 if not self.vip_mode:
     if 'minta akses' in text.lower():
-        return '🔑 KEY NYA?'
+        return '🔑 PUNYA KEY NYA?'
     if 'varszzkey' in text.lower():
         self.vip_mode = True
         return '✅ BENAR! VIP AKTIF!'
